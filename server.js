@@ -43,7 +43,7 @@ app.get("/lichesstv", async function (req, res) {
     req = https.get(
       "https://lichess.org/api/tv/feed",
       {
-        headers: { Authorization: `Bearer DCxq4a5zCjRbivLy` },
+        headers: { Authorization: `Bearer ${process.env.LICHESS_API_TOKEN}` },
       },
       (resp) => {
         resp.on("data", (chunk) => {
