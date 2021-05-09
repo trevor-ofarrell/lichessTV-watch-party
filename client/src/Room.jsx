@@ -45,6 +45,8 @@ export const Button = ({ className = "", children, ...rest }) => {
   );
 };
 
+const url = "http://localhost:3030/lichesstv";
+
 const Room = () => {
   const { messages, sendMessage } = useChat();
   const [newMessage, setNewMessage] = useState("");
@@ -78,7 +80,7 @@ const Room = () => {
 
   useEffect(() => {
     if (!listening) {
-      const source = new EventSource("http://localhost:3030/lichesstv");
+      const source = new EventSource(url);
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
@@ -91,13 +93,14 @@ const Room = () => {
               whiteUsername =
                 parsedData.d.players[0].user.title +
                 " " +
-                parsedData.d.players[0].user.name;
+                parsedData.d.players[0].user.name +
+                " " +
+                parsedData.d.players[0].rating;
             } else {
-              whiteUsername = parsedData.d.players[0].user.name;
-            }
-            if (parsedData.d.players[0].rating) {
-              whiteUsername + " " + parsedData.d.players[0].rating.toString();
-              setWhite(whiteUsername);
+              whiteUsername =
+                parsedData.d.players[0].user.name +
+                " " +
+                parsedData.d.players[0].rating;
             }
             setWhite(whiteUsername);
           }
@@ -106,16 +109,14 @@ const Room = () => {
               blackUsername =
                 parsedData.d.players[1].user.title +
                 " " +
-                parsedData.d.players[1].user.name;
+                parsedData.d.players[1].user.name +
+                " " +
+                parsedData.d.players[1].rating;
             } else {
-              blackUsername = parsedData.d.players[1].user.name;
-            }
-            if (parsedData.d.players[1].rating) {
-              blackUsername + " " + parsedData.d.players[1].rating.toString();
-              setBlack(blackUsername);
-              console.log(
-                blackUsername + " " + parsedData.d.players[1].rating.toString()
-              );
+              blackUsername =
+                parsedData.d.players[1].user.name +
+                " " +
+                parsedData.d.players[1].rating;
             }
             setBlack(blackUsername);
           }
@@ -131,11 +132,11 @@ const Room = () => {
 
   return (
     <div className="ml-auto w-screen max-h-screen bg-gray-900 h-screen flex flex-col lg:items-stretch lg:flex-row overflow-hidden">
-      <div className=" pr-20 lg:w-auto w-full  overflow-hidden m-auto">
-        <div className="font-medium md:text-md text-xs text-white">
+      <div className="mt-1 sm:mt-auto overflow-hidden m-auto">
+        <div className="font-medium md:text-sm text-xs text-white">
           FEN: {FEN}
         </div>
-        <div className="font-medium text-xl my-1 text-white"> {black}</div>
+        <div className="font-medium text-2xl my-1 text-white"> {black}</div>
         <div className="m-auto">
           <Chessboard
             position={FEN[0]}
@@ -147,9 +148,9 @@ const Room = () => {
             }
           />
         </div>
-        <div className="font-medium text-xl my-1 text-white"> {white}</div>
+        <div className="font-medium text-2xl my-1 text-white"> {white}</div>
       </div>
-      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-3/12 w-full max-w-full lg:max-w-2/6 pb-4 bg-gray-900 ml-auto">
+      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-3/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
         <div className="h-full ml-1 mt-1 overflow-y-auto">
           <ol>
             {messages.map((message, i) => (
