@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
-const https = require("https");
 import tw from "twin.macro";
 import useChat from "./useChatRoom";
 import clsx from "clsx";
@@ -50,6 +49,8 @@ const Room = () => {
   const { messages, sendMessage } = useChat();
   const [newMessage, setNewMessage] = useState("");
   const [FEN, setFEN] = useState([]);
+  const [black, setBlack] = useState("");
+  const [white, setWhite] = useState("");
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
 
@@ -78,19 +79,46 @@ const Room = () => {
   useEffect(() => {
     if (!listening) {
       const source = new EventSource("http://localhost:3030/lichesstv");
-      console.log("using effect");
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
         console.log(parsedData.d);
+        if (parsedData.d.players) {
+          if (parsedData.d.players[0].user.name) {
+            let whiteUsername = "";
+            if (parsedData.d.players[0].user.title) {
+              whiteUsername =
+                parsedData.d.players[0].user.title +
+                " " +
+                parsedData.d.players[0].user.name;
+            } else {
+              whiteUsername = parsedData.d.players[0].user.name;
+            }
+            setWhite(whiteUsername);
+          }
+          if (parsedData.d.players[1].user.name) {
+            let blackUsername = "";
+            if (parsedData.d.players[1].user.title) {
+              blackUsername =
+                parsedData.d.players[1].user.title +
+                " " +
+                parsedData.d.players[1].user.name;
+            } else {
+              blackUsername = parsedData.d.players[1].user.name;
+            }
+            setBlack(blackUsername);
+          }
+        }
       };
       setListening(true);
     }
   }, [listening, FEN]);
 
   return (
-    <div className="ml-auto w-screen bg-gray-700 h-screen flex items-stretch">
-      <div className="ml-20 pr-20 w-50% my-auto">
+    <div className="ml-auto w-screen max-h-screen bg-gray-700 h-screen flex items-stretch overflow-hidden">
+      <div className="ml-20 pr-20 w-50% my-auto overflow-hidden">
+        <div className="font-medium text-xl">FEN: {FEN}</div>
+        <div className="font-medium text-xl"> {black}</div>
         <Chessboard
           position={FEN[0]}
           transitionDuration={100}
@@ -100,11 +128,10 @@ const Room = () => {
               : Math.min(size.screenWidth, size.screenHeight)
           }
         />
+        <div className="font-medium text-xl"> {white}</div>
       </div>
-      <div className="shadow-lg rounded-lg h-11.5/12 w-full overflow-x-scroll mb-6 bg-gray-600">
+      <div className="shadow-2xl rounded-lg h-auto w-50% max-w-50% verflow-x-scroll mb-6 bg-gray-700">
         <div className="h-11/12">
-          <div>FEN:{FEN}</div>
-
           <ol>
             {messages.map((message, i) => (
               <li
@@ -117,8 +144,9 @@ const Room = () => {
           </ol>
           <div ref={messageRef}></div>
         </div>
-        <div className="bottom-0 absolute pt-4">
-          <InputTextLeft
+        <div class="text-gray-600 w-45% bottom-0 absolute">
+          <input
+            class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
             id="message"
             type="text"
             label="Message"
@@ -128,14 +156,15 @@ const Room = () => {
             onChange={handleNewMessageChange}
             onKeyUp={handleKeyUp}
           />
-          <PrimaryButton
+          <button
+            class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
             disabled={!newMessage}
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
           >
             Send
-          </PrimaryButton>
+          </button>
         </div>
       </div>
     </div>
