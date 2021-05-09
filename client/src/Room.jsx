@@ -143,7 +143,7 @@ const Room = () => {
             transitionDuration={100}
             calcWidth={(size) =>
               size.screenWidth > 600 && size.screenHeight > 400
-                ? (size.screenHeight / 100) * 60
+                ? (size.screenHeight / 100) * 55
                 : screen.width
             }
           />
