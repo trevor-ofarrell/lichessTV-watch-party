@@ -10,7 +10,7 @@ export const Input = tw.input`
   py-2
   placeholder-gray-500
   w-auto
-  md:mx-auto
+  lg:mx-auto
   lg:mx-auto
   focus:ring-primary-100
   focus:border-primary-500
@@ -84,8 +84,9 @@ const Room = () => {
         setFEN([parsedData.d.fen]);
         console.log(parsedData.d);
         if (parsedData.d.players) {
+          let whiteUsername = "";
+          let blackUsername = "";
           if (parsedData.d.players[0].user.name) {
-            let whiteUsername = "";
             if (parsedData.d.players[0].user.title) {
               whiteUsername =
                 parsedData.d.players[0].user.title +
@@ -94,10 +95,13 @@ const Room = () => {
             } else {
               whiteUsername = parsedData.d.players[0].user.name;
             }
+            if (parsedData.d.players[0].rating) {
+              whiteUsername + " " + parsedData.d.players[0].rating.toString();
+              setWhite(whiteUsername);
+            }
             setWhite(whiteUsername);
           }
           if (parsedData.d.players[1].user.name) {
-            let blackUsername = "";
             if (parsedData.d.players[1].user.title) {
               blackUsername =
                 parsedData.d.players[1].user.title +
@@ -106,7 +110,18 @@ const Room = () => {
             } else {
               blackUsername = parsedData.d.players[1].user.name;
             }
+            if (parsedData.d.players[1].rating) {
+              blackUsername + " " + parsedData.d.players[1].rating.toString();
+              setBlack(blackUsername);
+              console.log(
+                blackUsername + " " + parsedData.d.players[1].rating.toString()
+              );
+            }
             setBlack(blackUsername);
+          }
+          sendMessage(`${blackUsername} (black) VS. ${whiteUsername} (white)`);
+          if (parsedData.d.id) {
+            sendMessage(`Game in progress at lichess.org/${parsedData.d.id}`);
           }
         }
       };
@@ -115,36 +130,40 @@ const Room = () => {
   }, [listening, FEN]);
 
   return (
-    <div className="ml-auto w-screen max-h-screen bg-gray-700 h-screen flex items-stretch overflow-hidden">
-      <div className="ml-20 pr-20 w-50% my-auto overflow-hidden">
-        <div className="font-medium text-xl">FEN: {FEN}</div>
-        <div className="font-medium text-xl"> {black}</div>
-        <Chessboard
-          position={FEN[0]}
-          transitionDuration={100}
-          calcWidth={(size) =>
-            size.screenWidth > 600 && size.screenHeight > 600
-              ? 600
-              : Math.min(size.screenWidth, size.screenHeight)
-          }
-        />
-        <div className="font-medium text-xl"> {white}</div>
+    <div className="ml-auto w-screen max-h-screen bg-gray-900 h-screen flex flex-col lg:items-stretch lg:flex-row overflow-hidden">
+      <div className=" pr-20 lg:w-auto w-full  overflow-hidden m-auto">
+        <div className="font-medium md:text-md text-xs text-white">
+          FEN: {FEN}
+        </div>
+        <div className="font-medium text-xl my-1 text-white"> {black}</div>
+        <div className="m-auto">
+          <Chessboard
+            position={FEN[0]}
+            transitionDuration={100}
+            calcWidth={(size) =>
+              size.screenWidth > 600 && size.screenHeight > 400
+                ? (size.screenHeight / 100) * 60
+                : screen.width
+            }
+          />
+        </div>
+        <div className="font-medium text-xl my-1 text-white"> {white}</div>
       </div>
-      <div className="shadow-2xl rounded-lg h-auto w-50% max-w-50% verflow-x-scroll mb-6 bg-gray-700">
-        <div className="h-11/12">
+      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-3/12 w-full max-w-full lg:max-w-2/6 pb-4 bg-gray-900 ml-auto">
+        <div className="h-full ml-1 mt-1 overflow-y-auto">
           <ol>
             {messages.map((message, i) => (
               <li
                 key={i}
                 /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
               >
-                <span>{message.body}</span>
+                <span className="text-white text-md">{message.body}</span>
               </li>
             ))}
           </ol>
           <div ref={messageRef}></div>
         </div>
-        <div class="text-gray-600 w-45% bottom-0 absolute">
+        <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
           <input
             class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
             id="message"
