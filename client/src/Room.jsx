@@ -156,7 +156,7 @@ const Room = () => {
         </div>
         <div className="font-medium text-2xl my-1 text-white"> {white}</div>
       </div>
-      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-3/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
+      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
         <div className="h-full ml-1 mt-1 overflow-y-auto">
           <ol>
             {messages.map((message, i) => (

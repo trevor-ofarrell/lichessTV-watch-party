@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
     socket.leave(room);
   });
 });
-app.get("/hey", (req, res) => res.send("guh"));
+
 app.get("/lichesstv", async function (req, res) {
   res.set({
     "Cache-Control": "no-cache",
@@ -48,9 +48,7 @@ app.get("/lichesstv", async function (req, res) {
       (resp) => {
         resp.on("data", (chunk) => {
           const chunkStr = chunk.toString().trim();
-          console.log(chunkStr);
           res.write(`data: ${chunkStr}\n\n`);
-          // do stuff
         });
       }
     );
