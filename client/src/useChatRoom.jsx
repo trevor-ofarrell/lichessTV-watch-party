@@ -24,11 +24,13 @@ const useChatRoom = () => {
     };
   }, []);
 
-  const sendMessage = (messageBody) => {
+  const sendMessage = (messageBody, system) => {
     socketRef.current.emit(NEW_MESSAGE_EVENT, {
       body: messageBody,
       senderId: socketRef.current.id,
+      system: system,
     });
+    console.log(socketRef.current.id);
   };
 
   return { messages, sendMessage };

@@ -62,7 +62,7 @@ const Room = () => {
 
   const handleSendMessage = () => {
     if (newMessage !== "") {
-      sendMessage(newMessage);
+      sendMessage(newMessage, false);
       setNewMessage("");
     }
   };
@@ -70,7 +70,7 @@ const Room = () => {
   const handleKeyUp = (event) => {
     if (event.key === "Enter") {
       if (newMessage !== "") {
-        sendMessage(newMessage);
+        sendMessage(newMessage, false);
         setNewMessage("");
       }
     }
@@ -120,9 +120,15 @@ const Room = () => {
             }
             setBlack(blackUsername);
           }
-          sendMessage(`${blackUsername} (black) VS. ${whiteUsername} (white)`);
+          sendMessage(
+            `${blackUsername} (black) VS. ${whiteUsername} (white)`,
+            true
+          );
           if (parsedData.d.id) {
-            sendMessage(`Game in progress at lichess.org/${parsedData.d.id}`);
+            sendMessage(
+              `Game in progress at lichess.org/${parsedData.d.id}`,
+              true
+            );
           }
         }
       };
@@ -158,7 +164,15 @@ const Room = () => {
                 key={i}
                 /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
               >
-                <span className="text-white text-md">{message.body}</span>
+                {message.system === true ? (
+                  <div className="text-center text-gray-500 text-sm">
+                    {message.body}
+                  </div>
+                ) : (
+                  <span className="text-left text-white text-sm">
+                    {message.body}
+                  </span>
+                )}
               </li>
             ))}
           </ol>
