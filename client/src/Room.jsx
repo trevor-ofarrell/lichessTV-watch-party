@@ -48,13 +48,21 @@ export const Button = ({ className = "", children, ...rest }) => {
 const url = "http://localhost:3030/lichesstv";
 
 const Room = () => {
-  const { messages, sendMessage } = useChat();
+  const {
+    messages,
+    sendMessage,
+    createUser,
+    loggedIn,
+    setLoggedIn,
+  } = useChat();
   const [newMessage, setNewMessage] = useState("");
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState("");
   const [white, setWhite] = useState("");
+  const [userName, setUserName] = useState("");
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
+  const [logged, setLogged] = useState(false);
 
   const handleNewMessageChange = (event) => {
     setNewMessage(event.target.value);
@@ -73,6 +81,14 @@ const Room = () => {
         sendMessage(newMessage, false);
         setNewMessage("");
       }
+    }
+  };
+
+  const handleLoggedIn = (flag) => {
+    if (flag === false) {
+      console.log("logged in");
+    } else {
+      console.log("logged out");
     }
   };
 
@@ -158,47 +174,81 @@ const Room = () => {
       </div>
       <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
         <div className="h-full ml-1 mt-1 overflow-y-auto">
-          <ol>
-            {messages.map((message, i) => (
-              <li
-                key={i}
-                /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
-              >
-                {message.system === true ? (
-                  <div className="text-center text-gray-500 text-sm">
-                    {message.body}
-                  </div>
-                ) : (
-                  <span className="text-left text-white text-sm">
-                    {message.body}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ol>
+          {logged === true ? (
+            <>
+              <ol>
+                {messages.map((message, i) => (
+                  <li
+                    key={i}
+                    /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
+                  >
+                    {message.system === true ? (
+                      <div className="text-center text-gray-500 text-sm">
+                        {message.body}
+                      </div>
+                    ) : (
+                      <span className="text-left text-white text-sm">
+                        {message.userName} {message.body}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
+                <input
+                  class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                  id="message"
+                  type="text"
+                  label="Message"
+                  placeholder="enter message here"
+                  variant="outlined"
+                  value={newMessage}
+                  onChange={handleNewMessageChange}
+                  onKeyUp={handleKeyUp}
+                />
+                <button
+                  class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
+                  disabled={!newMessage}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSendMessage}
+                >
+                  Send
+                </button>
+              </div>
+            </>
+          ) : (
+            <div>
+              not logged in
+              <div>
+                <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
+                  <input
+                    class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    id="message"
+                    type="text"
+                    label="Message"
+                    placeholder="enter username"
+                    variant="outlined"
+                    value={userName}
+                    onChange={(event) => setUserName(event.target.value)}
+                    onKeyUp={handleLoggedIn(true)}
+                  />
+                  <button
+                    class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      createUser(userName);
+                      setLogged(true);
+                    }}
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div ref={messageRef}></div>
-        </div>
-        <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
-          <input
-            class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-            id="message"
-            type="text"
-            label="Message"
-            placeholder="enter message here"
-            variant="outlined"
-            value={newMessage}
-            onChange={handleNewMessageChange}
-            onKeyUp={handleKeyUp}
-          />
-          <button
-            class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
-            disabled={!newMessage}
-            variant="contained"
-            color="primary"
-            onClick={handleSendMessage}
-          >
-            Send
-          </button>
         </div>
       </div>
     </div>
