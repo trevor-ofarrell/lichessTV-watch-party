@@ -50,5 +50,6 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
-  }
+  },
+  "proxy": "http://localhost:3030"
 }

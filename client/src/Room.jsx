@@ -2,15 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
 import useChat from "./useChatRoom";
-import clsx from "clsx";
-import EventEmitter from "events";
 
 export const Input = tw.input`
   px-4
   py-2
   placeholder-gray-500
   w-auto
-  lg:mx-auto
   lg:mx-auto
   focus:ring-primary-100
   focus:border-primary-500
@@ -48,13 +45,21 @@ export const Button = ({ className = "", children, ...rest }) => {
 const url = "http://localhost:3030/lichesstv";
 
 const Room = () => {
-  const { messages, sendMessage } = useChat();
+  const {
+    messages,
+    sendMessage,
+    createUser,
+    loggedIn,
+    setLoggedIn,
+  } = useChat();
   const [newMessage, setNewMessage] = useState("");
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState("");
   const [white, setWhite] = useState("");
+  const [userName, setUserName] = useState("");
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
+  const [logged, setLogged] = useState(false);
 
   const handleNewMessageChange = (event) => {
     setNewMessage(event.target.value);
@@ -84,7 +89,6 @@ const Room = () => {
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
-        console.log(parsedData.d);
         if (parsedData.d.players) {
           let whiteUsername = "";
           let blackUsername = "";
@@ -158,47 +162,90 @@ const Room = () => {
       </div>
       <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
         <div className="h-full ml-1 mt-1 overflow-y-auto">
-          <ol>
-            {messages.map((message, i) => (
-              <li
-                key={i}
-                /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
+          {logged === true ? (
+            <>
+              <ol>
+                {messages.map((message, i) => (
+                  <li key={i}>
+                    {message.system === true ? (
+                      <div className="text-center text-gray-500 text-sm">
+                        {message.body}
+                      </div>
+                    ) : (
+                      <span className="text-left text-white text-sm flex">
+                        {message.name ? (
+                          <div className="font-bold text-primary-400 mr-1">
+                            {message.name}:
+                          </div>
+                        ) : (
+                          <>{""}</>
+                        )}
+                        {message.body}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              <div className="lg:w-30% px-auto w-99 bottom-1 absolute">
+                <input
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                  id="message"
+                  type="text"
+                  label="Message"
+                  placeholder="enter message here"
+                  variant="outlined"
+                  value={newMessage}
+                  onChange={handleNewMessageChange}
+                  onKeyUp={handleKeyUp}
+                />
+                <button
+                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
+                  disabled={!newMessage}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSendMessage}
+                >
+                  Send
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="m-auto">
+              <div className="font-bold text-white text-lg px-4">
+                Create a username to join the chat
+              </div>
+              <div>
+                <div className="w-full overflow-hidden p-4">
+                  <input
+                    className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    id="message"
+                    type="text"
+                    label="Message"
+                    placeholder="enter username"
+                    variant="outlined"
+                    value={userName}
+                    onChange={(event) => setUserName(event.target.value)}
+                    onSubmit={() => {
+                      createUser(userName);
+                      setLogged(true);
+                    }}
+                  />
+                </div>
+              </div>
+              <button
+                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  createUser(userName);
+                  setLogged(true);
+                }}
               >
-                {message.system === true ? (
-                  <div className="text-center text-gray-500 text-sm">
-                    {message.body}
-                  </div>
-                ) : (
-                  <span className="text-left text-white text-sm">
-                    {message.body}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ol>
+                Join Chat
+              </button>
+            </div>
+          )}
           <div ref={messageRef}></div>
-        </div>
-        <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
-          <input
-            class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-            id="message"
-            type="text"
-            label="Message"
-            placeholder="enter message here"
-            variant="outlined"
-            value={newMessage}
-            onChange={handleNewMessageChange}
-            onKeyUp={handleKeyUp}
-          />
-          <button
-            class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
-            disabled={!newMessage}
-            variant="contained"
-            color="primary"
-            onClick={handleSendMessage}
-          >
-            Send
-          </button>
         </div>
       </div>
     </div>
