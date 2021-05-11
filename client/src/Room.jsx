@@ -84,14 +84,6 @@ const Room = () => {
     }
   };
 
-  const handleLoggedIn = (flag) => {
-    if (flag === false) {
-      console.log("logged in");
-    } else {
-      console.log("logged out");
-    }
-  };
-
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
   useEffect(() => {
@@ -187,15 +179,21 @@ const Room = () => {
                         {message.body}
                       </div>
                     ) : (
-                      <span className="text-left text-white text-sm">
-                        {message.name ? <>{message.name}: </> : <>{""}</>}
+                      <span className="text-left text-white text-sm flex">
+                        {message.name ? (
+                          <div className="font-bold text-primary-400 mr-1">
+                            {message.name}:
+                          </div>
+                        ) : (
+                          <>{""}</>
+                        )}
                         {message.body}
                       </span>
                     )}
                   </li>
                 ))}
               </ol>
-              <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
+              <div class="lg:w-30% px-auto w-99 bottom-0 absolute">
                 <input
                   class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                   id="message"
@@ -208,7 +206,7 @@ const Room = () => {
                   onKeyUp={handleKeyUp}
                 />
                 <button
-                  class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
+                  class="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
                   disabled={!newMessage}
                   variant="contained"
                   color="primary"
@@ -219,12 +217,14 @@ const Room = () => {
               </div>
             </>
           ) : (
-            <div>
-              not logged in
+            <div className="m-auto">
+              <div className="font-bold text-white text-lg px-4">
+                Create a username to join the chat
+              </div>
               <div>
-                <div class="lg:w-2/6 w-full bottom-0 absolute overflow-hidden">
+                <div class="w-full overflow-hidden p-4">
                   <input
-                    class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    class="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                     id="message"
                     type="text"
                     label="Message"
@@ -232,21 +232,24 @@ const Room = () => {
                     variant="outlined"
                     value={userName}
                     onChange={(event) => setUserName(event.target.value)}
-                    onKeyUp={handleLoggedIn(true)}
-                  />
-                  <button
-                    class="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
+                    onSubmit={() => {
                       createUser(userName);
                       setLogged(true);
                     }}
-                  >
-                    Send
-                  </button>
+                  />
                 </div>
               </div>
+              <button
+                class="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  createUser(userName);
+                  setLogged(true);
+                }}
+              >
+                Join Chat
+              </button>
             </div>
           )}
           <div ref={messageRef}></div>
