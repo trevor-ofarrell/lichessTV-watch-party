@@ -188,7 +188,8 @@ const Room = () => {
                       </div>
                     ) : (
                       <span className="text-left text-white text-sm">
-                        {message.userName} {message.body}
+                        {message.name ? <>{message.name}: </> : <>{""}</>}
+                        {message.body}
                       </span>
                     )}
                   </li>

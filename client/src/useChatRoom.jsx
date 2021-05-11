@@ -32,20 +32,23 @@ const useChatRoom = () => {
   }, []);
 
   const sendMessage = (messageBody, system) => {
-    const userName = [...users].filter(
+    let userName = Array.from(users).filter(
       (ele) => ele.id === socketRef.current.id
     );
-    console.log(userName, users);
+    if (userName.length) {
+      userName = userName[0];
+    }
+    console.log(userName.name, users);
     socketRef.current.emit(NEW_MESSAGE_EVENT, {
       body: messageBody,
       senderId: socketRef.current.id,
-      userName: userName !== "" ? userName : "",
+      name: userName.name,
       system: system,
     });
   };
 
   const createUser = (name) => {
-    socketRef.current = socketIOClient(SOCKET_SERVER_URL);
+    console.log(socketRef.current, name);
     setUsers(
       (users) => new Set([...users, { name: name, id: socketRef.current.id }])
     );
