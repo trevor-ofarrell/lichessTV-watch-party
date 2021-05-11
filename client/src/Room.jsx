@@ -2,15 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
 import useChat from "./useChatRoom";
-import clsx from "clsx";
-import EventEmitter from "events";
 
 export const Input = tw.input`
   px-4
   py-2
   placeholder-gray-500
   w-auto
-  lg:mx-auto
   lg:mx-auto
   focus:ring-primary-100
   focus:border-primary-500
@@ -92,7 +89,6 @@ const Room = () => {
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
-        console.log(parsedData.d);
         if (parsedData.d.players) {
           let whiteUsername = "";
           let blackUsername = "";
@@ -170,10 +166,7 @@ const Room = () => {
             <>
               <ol>
                 {messages.map((message, i) => (
-                  <li
-                    key={i}
-                    /*className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}*/
-                  >
+                  <li key={i}>
                     {message.system === true ? (
                       <div className="text-center text-gray-500 text-sm">
                         {message.body}
@@ -193,9 +186,9 @@ const Room = () => {
                   </li>
                 ))}
               </ol>
-              <div class="lg:w-30% px-auto w-99 bottom-0 absolute">
+              <div className="lg:w-30% px-auto w-99 bottom-1 absolute">
                 <input
-                  class="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                   id="message"
                   type="text"
                   label="Message"
@@ -206,7 +199,7 @@ const Room = () => {
                   onKeyUp={handleKeyUp}
                 />
                 <button
-                  class="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
+                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
                   disabled={!newMessage}
                   variant="contained"
                   color="primary"
@@ -222,9 +215,9 @@ const Room = () => {
                 Create a username to join the chat
               </div>
               <div>
-                <div class="w-full overflow-hidden p-4">
+                <div className="w-full overflow-hidden p-4">
                   <input
-                    class="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                     id="message"
                     type="text"
                     label="Message"
@@ -240,7 +233,7 @@ const Room = () => {
                 </div>
               </div>
               <button
-                class="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
                 variant="contained"
                 color="primary"
                 onClick={() => {

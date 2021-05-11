@@ -47,7 +47,6 @@ const useChatRoom = () => {
     if (userName.length) {
       userName = userName[0];
     }
-    console.log(userName.name, users);
     socketRef.current.emit(NEW_MESSAGE_EVENT, {
       body: messageBody,
       senderId: socketRef.current.id,
@@ -57,7 +56,6 @@ const useChatRoom = () => {
   };
 
   const createUser = (name) => {
-    console.log(socketRef.current, name);
     setUsers(
       (users) => new Set([...users, { name: name, id: socketRef.current.id }])
     );
