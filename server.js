@@ -8,13 +8,10 @@ const PORT = 3030;
 const NEW_MESSAGE_EVENT = "new-message-event";
 
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(app);
 const io = socketIO(server, {
   cors: true,
-  origins: [
-    "http://localhost:3000",
-    "http://lichess-tv-watch-party.vercel.app",
-  ],
+  origins: ["localhost:3000", "https://lichess-tv-watch-party.vercel.app"],
 });
 
 app.use(cors({ credentials: true }));
