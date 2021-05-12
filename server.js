@@ -33,7 +33,6 @@ app.get("/lichesstv", async function (req, res) {
   res.set({
     "Cache-Control": "no-cache",
     "Content-Type": "text/event-stream",
-    "Access-Control-Allow-Origin": "*",
     Connection: "keep-alive",
   });
   res.flushHeaders();
