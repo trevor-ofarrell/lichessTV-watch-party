@@ -29,6 +29,5 @@
     "express": "^4.17.1",
     "https": "^1.0.0",
     "socket.io": "^4.0.0"
-  },
-  "proxy": "http://localhost:3030"
+  }
 }

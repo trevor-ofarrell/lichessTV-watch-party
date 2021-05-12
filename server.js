@@ -11,10 +11,13 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: true,
-  origins: ["localhost:3000"],
+  origins: [
+    "http://localhost:3000",
+    "http://lichess-tv-watch-party.vercel.app",
+  ],
 });
 
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 const room = "general";
 io.on("connection", (socket) => {
@@ -33,6 +36,7 @@ app.get("/lichesstv", async function (req, res) {
   res.set({
     "Cache-Control": "no-cache",
     "Content-Type": "text/event-stream",
+    "Access-Control-Allow-Origin": "*",
     Connection: "keep-alive",
   });
   res.flushHeaders();

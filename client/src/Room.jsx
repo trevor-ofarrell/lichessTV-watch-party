@@ -42,7 +42,7 @@ export const Button = ({ className = "", children, ...rest }) => {
   );
 };
 
-const url = "http://localhost:3030/lichesstv";
+const url = `http://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
 
 const Room = () => {
   const {
@@ -130,7 +130,7 @@ const Room = () => {
           );
           if (parsedData.d.id) {
             sendMessage(
-              `Game in progress at lichess.org/${parsedData.d.id}`,
+              `Game in progress at https://lichess.org/${parsedData.d.id}`,
               true
             );
           }
@@ -160,7 +160,7 @@ const Room = () => {
         </div>
         <div className="font-medium text-2xl my-1 text-white"> {white}</div>
       </div>
-      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-12 bg-gray-900 ml-auto">
+      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-14 bg-gray-900 ml-auto">
         <div className="h-full ml-1 mt-1 overflow-y-auto">
           {logged === true ? (
             <>
