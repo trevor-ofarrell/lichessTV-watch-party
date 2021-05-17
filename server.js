@@ -11,7 +11,7 @@ const app = express();
 const server = https.createServer(app);
 const io = socketIO(server, {
   cors: true,
-  origins: ["localhost:3000", "https://lichess-tv-watch-party.vercel.app"],
+  origins: ["localhost:3000", "https://lichess-tv-watch-party.vercel.app", "http://lichess-tv-watch-party.vercel.app"],
 });
 
 app.use(cors({ credentials: true }));
