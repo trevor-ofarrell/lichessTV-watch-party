@@ -42,7 +42,7 @@ export const Button = ({ className = "", children, ...rest }) => {
   );
 };
 
-const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
+const url = `http://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
 
 const Room = () => {
   const {
