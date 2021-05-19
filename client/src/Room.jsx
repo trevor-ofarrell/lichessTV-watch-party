@@ -8,7 +8,7 @@ export const Input = tw.input`
   py-2
   placeholder-gray-500
   w-auto
-  lg:mx-auto
+  xl:mx-auto
   focus:ring-primary-100
   focus:border-primary-500
   border-gray-400
@@ -141,11 +141,11 @@ const Room = () => {
   }, [listening, FEN]);
 
   return (
-    <div className="w-screen max-h-screen h-screen bg-gray-900 overflow-hidden">
+    <div className="w-screen max-h-screen h-screen ml-auto bg-gray-900">
       <div className="font-medium md:text-sm text-xs text-white max-w-90">
         FEN: {FEN}
       </div>
-      <div className="w-fulle max-h-full h-full ml-auto bg-gray-900 flex flex-col lg:items-stretch lg:flex-row overflow-hidden">
+      <div className="flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
         <div className="sm:mt-auto overflow-hidden m-auto">
           <div className="m-auto">
             <div className="font-medium md:text-2xl text-lg my-1 text-white">
@@ -156,9 +156,11 @@ const Room = () => {
                 position={FEN[0]}
                 transitionDuration={100}
                 calcWidth={(size) =>
-                  size.screenWidth > 600 && size.screenHeight > 400
+                  size.screenWidth < 1440
                     ? (size.screenHeight / 100) * 47.5
-                    : (screen.width / 100) * 85
+                    : size.screenWidth > 1440
+                    ? (size.screenHeight / 100) * 70
+                    : (screen.width / 100) * 100
                 }
               />
             </div>
@@ -168,8 +170,7 @@ const Room = () => {
             </div>
           </div>
         </div>
-
-        <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-14 bg-gray-900 ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             {logged === true ? (
               <>
@@ -195,7 +196,7 @@ const Room = () => {
                     </li>
                   ))}
                 </ol>
-                <div className="lg:w-30% px-auto w-99 bottom-0 absolute">
+                <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
                   <input
                     className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                     id="message"
