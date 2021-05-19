@@ -141,111 +141,121 @@ const Room = () => {
   }, [listening, FEN]);
 
   return (
-    <div className="ml-auto w-screen max-h-screen bg-gray-900 h-screen flex flex-col lg:items-stretch lg:flex-row overflow-hidden">
-      <div className="mt-1 sm:mt-auto overflow-hidden m-auto">
-        <div className="font-medium md:text-sm text-xs text-white">
-          FEN: {FEN}
-        </div>
-        <div className="font-medium text-2xl my-1 text-white"> {black}</div>
-        <div className="m-auto">
-          <Chessboard
-            position={FEN[0]}
-            transitionDuration={100}
-            calcWidth={(size) =>
-              size.screenWidth > 600 && size.screenHeight > 400
-                ? (size.screenHeight / 100) * 55
-                : screen.width
-            }
-          />
-        </div>
-        <div className="font-medium text-2xl my-1 text-white"> {white}</div>
+    <div className="w-screen max-h-screen h-screen bg-gray-900 overflow-hidden">
+      <div className="font-medium md:text-sm text-xs text-white max-w-90">
+        FEN: {FEN}
       </div>
-      <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-14 bg-gray-900 ml-auto">
-        <div className="h-full ml-1 mt-1 overflow-y-auto">
-          {logged === true ? (
-            <>
-              <ol>
-                {messages.map((message, i) => (
-                  <li key={i}>
-                    {message.system === true ? (
-                      <div className="text-center text-gray-500 text-sm">
-                        {message.body}
-                      </div>
-                    ) : (
-                      <span className="text-left text-white text-sm flex">
-                        {message.name ? (
-                          <div className="font-bold text-primary-400 mr-1">
-                            {message.name}:
-                          </div>
-                        ) : (
-                          <>{""}</>
-                        )}
-                        {message.body}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ol>
-              <div className="lg:w-30% px-auto w-99 bottom-1 absolute">
-                <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-                  id="message"
-                  type="text"
-                  label="Message"
-                  placeholder="enter message here"
-                  variant="outlined"
-                  value={newMessage}
-                  onChange={handleNewMessageChange}
-                  onKeyUp={handleKeyUp}
-                />
-                <button
-                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-green-500 rounded-r-lg hover:bg-green-600 focus:bg-green-600"
-                  disabled={!newMessage}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSendMessage}
-                >
-                  Send
-                </button>
-              </div>
-            </>
-          ) : (
+      <div className="w-fulle max-h-full h-full ml-auto bg-gray-900 flex flex-col lg:items-stretch lg:flex-row overflow-hidden">
+        <div className="sm:mt-auto overflow-hidden m-auto">
+          <div className="m-auto">
+            <div className="font-medium md:text-2xl text-lg my-1 text-white">
+              {black}
+            </div>
             <div className="m-auto">
-              <div className="font-bold text-white text-lg px-4">
-                Create a username to join the chat
-              </div>
-              <div>
-                <div className="w-full overflow-hidden p-4">
+              <Chessboard
+                position={FEN[0]}
+                transitionDuration={100}
+                calcWidth={(size) =>
+                  size.screenWidth > 600 && size.screenHeight > 400
+                    ? (size.screenHeight / 100) * 47.5
+                    : (screen.width / 100) * 85
+                }
+              />
+            </div>
+            <div className="font-medium md:text-2xl text-lg my-1 text-white">
+              {" "}
+              {white}
+            </div>
+          </div>
+        </div>
+
+        <div className="shadow-2xl rounded-lg h-full lg:w-2/6 lg:max-h-full max-h-4/12 w-full max-w-full lg:max-w-2/6 pb-14 bg-gray-900 ml-auto">
+          <div className="h-full ml-1 mt-1 overflow-y-auto">
+            {logged === true ? (
+              <>
+                <ol>
+                  {messages.map((message, i) => (
+                    <li key={i}>
+                      {message.system === true ? (
+                        <div className="text-center text-gray-500 text-sm">
+                          {message.body}
+                        </div>
+                      ) : (
+                        <span className="text-left text-white text-sm flex">
+                          {message.name ? (
+                            <div className="font-bold text-primary-400 mr-1">
+                              {message.name}:
+                            </div>
+                          ) : (
+                            <>{""}</>
+                          )}
+                          {message.body}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+                <div className="lg:w-30% px-auto w-99 bottom-0 absolute">
                   <input
-                    className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                     id="message"
                     type="text"
                     label="Message"
-                    placeholder="enter username"
+                    placeholder="enter message here"
                     variant="outlined"
-                    value={userName}
-                    onChange={(event) => setUserName(event.target.value)}
-                    onSubmit={() => {
-                      createUser(userName);
-                      setLogged(true);
-                    }}
+                    value={newMessage}
+                    onChange={handleNewMessageChange}
+                    onKeyUp={handleKeyUp}
                   />
+                  <button
+                    className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-purple-800 rounded-r-lg hover:bg-purple-900 focus:bg-purple-900"
+                    disabled={!newMessage}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSendMessage}
+                  >
+                    Send
+                  </button>
                 </div>
+              </>
+            ) : (
+              <div className="m-auto">
+                <div className="font-bold text-white text-lg px-4">
+                  Create a username to join the chat
+                </div>
+                <div>
+                  <div className="w-full overflow-hidden p-4">
+                    <input
+                      className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                      id="message"
+                      type="text"
+                      label="Message"
+                      placeholder="enter username"
+                      variant="outlined"
+                      value={userName}
+                      onChange={(event) => setUserName(event.target.value)}
+                      onSubmit={() => {
+                        createUser(userName);
+                        setLogged(true);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    createUser(userName);
+                    setLogged(true);
+                  }}
+                >
+                  Join Chat
+                </button>
               </div>
-              <button
-                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  createUser(userName);
-                  setLogged(true);
-                }}
-              >
-                Join Chat
-              </button>
-            </div>
-          )}
-          <div ref={messageRef}></div>
+            )}
+            <div ref={messageRef}></div>
+          </div>
         </div>
       </div>
     </div>
