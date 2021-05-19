@@ -333,8 +333,8 @@ video {
 .max-h-screen {
   max-height: 100vh;
 }
-.max-w-90 {
-  max-width: 90%;
+.max-w-70 {
+  max-width: 70vw;
 }
 .max-w-full {
   max-width: 100%;
@@ -403,8 +403,8 @@ video {
 .right-0 {
   right: 0;
 }
-.bottom-0 {
-  bottom: 0;
+.bottom-1 {
+  bottom: 0.25rem;
 }
 * {
   --tw-shadow: 0 0 transparent;
@@ -412,18 +412,13 @@ video {
 .shadow-xs {
   --tw-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
-.shadow-2xl,
+.focus\:shadow-outline:focus,
 .shadow-xs {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent),
     var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
 }
-.shadow-2xl {
-  --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
 .focus\:shadow-outline:focus {
   --tw-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent),
-    var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
 }
 * {
   --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
@@ -469,6 +464,12 @@ video {
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgba(160, 174, 192, var(--tw-text-opacity));
+}
+.break-all {
+  word-break: break-all;
+}
+.w-80 {
+  width: 80vw;
 }
 .w-99 {
   width: 99%;
@@ -581,29 +582,37 @@ video {
   }
 }
 @media (min-width: 1024px) {
-  .lg\:flex-row {
-    -webkit-flex-direction: row;
-    flex-direction: row;
-  }
-  .lg\:items-stretch {
-    -webkit-align-items: stretch;
-    align-items: stretch;
-  }
   .lg\:mx-auto {
     margin-left: auto;
     margin-right: auto;
   }
-  .lg\:max-h-full {
+}
+@media (min-width: 1280px) {
+  .xl\:flex-row {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+  }
+  .xl\:items-stretch {
+    -webkit-align-items: stretch;
+    align-items: stretch;
+  }
+  .xl\:max-h-full {
     max-height: 100%;
   }
-  .lg\:w-30 {
+  .xl\:pt-12 {
+    padding-top: 3rem;
+  }
+  .xl\:w-30 {
     width: 7rem;
   }
-  .lg\:w-30\% {
+  .xl\:w-30\% {
     width: 33.1%;
   }
-  .lg\:w-2\/6 {
+  .xl\:w-2\/6 {
     width: 33.333333%;
   }
+  .xl\:w-full {
+    width: 100%;
+  }
 }
-/*# sourceMappingURL=main.6ea6a531.chunk.css.map */
+/*# sourceMappingURL=main.405d70e5.chunk.css.map */

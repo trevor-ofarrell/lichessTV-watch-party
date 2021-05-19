@@ -8,7 +8,7 @@ export const Input = tw.input`
   py-2
   placeholder-gray-500
   w-auto
-  xl:mx-auto
+  lg:mx-auto
   focus:ring-primary-100
   focus:border-primary-500
   border-gray-400
@@ -81,6 +81,18 @@ const Room = () => {
     }
   };
 
+  const createPlayerNames = (user, setPlayer) => {
+    let username = "";
+    if (user.user.name) {
+      if (user.user.title) {
+        username = user.user.title + " " + user.user.name + " " + user.rating;
+      } else {
+        username = user.user.name + " " + user.rating;
+      }
+      setPlayer(username);
+    }
+  };
+
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
   useEffect(() => {
@@ -90,42 +102,10 @@ const Room = () => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
         if (parsedData.d.players) {
-          let whiteUsername = "";
-          let blackUsername = "";
-          if (parsedData.d.players[0].user.name) {
-            if (parsedData.d.players[0].user.title) {
-              whiteUsername =
-                parsedData.d.players[0].user.title +
-                " " +
-                parsedData.d.players[0].user.name +
-                " " +
-                parsedData.d.players[0].rating;
-            } else {
-              whiteUsername =
-                parsedData.d.players[0].user.name +
-                " " +
-                parsedData.d.players[0].rating;
-            }
-            setWhite(whiteUsername);
-          }
-          if (parsedData.d.players[1].user.name) {
-            if (parsedData.d.players[1].user.title) {
-              blackUsername =
-                parsedData.d.players[1].user.title +
-                " " +
-                parsedData.d.players[1].user.name +
-                " " +
-                parsedData.d.players[1].rating;
-            } else {
-              blackUsername =
-                parsedData.d.players[1].user.name +
-                " " +
-                parsedData.d.players[1].rating;
-            }
-            setBlack(blackUsername);
-          }
+          createPlayerNames(parsedData.d.players[0], setWhite);
+          createPlayerNames(parsedData.d.players[1], setBlack);
           sendMessage(
-            `${blackUsername} (black) VS. ${whiteUsername} (white)`,
+            `${parsedData.d.players[0].user.name} (white) VS. ${parsedData.d.players[1].user.name} (black)`,
             true
           );
           if (parsedData.d.id) {
@@ -250,6 +230,10 @@ const Room = () => {
                   onClick={() => {
                     createUser(userName);
                     setLogged(true);
+                    sendMessage(
+                      `${userName} just joined the party! Welcome!`,
+                      true
+                    );
                   }}
                 >
                   Join Chat

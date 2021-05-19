@@ -59,15 +59,6 @@ const useChatRoom = () => {
     setUsers(
       (users) => new Set([...users, { name: name, id: socketRef.current.id }])
     );
-    setMessages((messages) => [
-      ...messages,
-      {
-        body: `${name} just joined the party! Welcome!`,
-        senderId: socketRef.current.id,
-        name: "",
-        system: true,
-      },
-    ]);
   };
 
   return { messages, sendMessage, createUser };
