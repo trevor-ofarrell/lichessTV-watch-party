@@ -17,7 +17,9 @@ export const Input = tw.input`
   rounded-md
   shadow-xs
 `;
+
 export const InputTextLeft = tw(Input)`text-left py-2`;
+
 export const PrimaryButton = ({ className = "", children, ...rest }) => {
   return (
     <Button
@@ -42,7 +44,30 @@ export const Button = ({ className = "", children, ...rest }) => {
   );
 };
 
-const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
+const getWindowDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height,
+  };
+};
+
+const useWindowDimensions = () => {
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowDimensions;
+};
 
 const Room = () => {
   const {
@@ -52,6 +77,7 @@ const Room = () => {
     loggedIn,
     setLoggedIn,
   } = useChat();
+  const { height, width } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState("");
@@ -97,6 +123,7 @@ const Room = () => {
 
   useEffect(() => {
     if (!listening) {
+      const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
       const source = new EventSource(url);
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
@@ -121,7 +148,10 @@ const Room = () => {
   }, [listening, FEN]);
 
   return (
-    <div className="w-screen max-h-screen h-screen ml-auto bg-gray-900 overflow-hidden">
+    <div
+      style={{ height: height, width: width }}
+      className="ml-auto bg-gray-900 overflow-hidden"
+    >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
         <div className="sm:mt-auto overflow-hidden m-auto">
           <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
