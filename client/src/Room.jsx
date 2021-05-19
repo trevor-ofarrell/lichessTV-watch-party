@@ -141,12 +141,12 @@ const Room = () => {
   }, [listening, FEN]);
 
   return (
-    <div className="w-screen max-h-screen h-screen ml-auto bg-gray-900">
-      <div className="font-medium md:text-sm text-xs text-white max-w-90">
-        FEN: {FEN}
-      </div>
-      <div className="flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
+    <div className="w-screen max-h-screen h-screen ml-auto bg-gray-900 overflow-hidden">
+      <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
         <div className="sm:mt-auto overflow-hidden m-auto">
+          <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
+            FEN: {FEN}
+          </div>
           <div className="m-auto">
             <div className="font-medium md:text-2xl text-lg my-1 text-white">
               {black}
@@ -155,9 +155,10 @@ const Room = () => {
               <Chessboard
                 position={FEN[0]}
                 transitionDuration={100}
+                showNotation={false}
                 calcWidth={(size) =>
                   size.screenWidth < 1440
-                    ? (size.screenHeight / 100) * 47.5
+                    ? (size.screenHeight / 100) * 46
                     : size.screenWidth > 1440
                     ? (size.screenHeight / 100) * 70
                     : (screen.width / 100) * 100
@@ -220,12 +221,12 @@ const Room = () => {
                 </div>
               </>
             ) : (
-              <div className="m-auto">
-                <div className="font-bold text-white text-lg px-4">
+              <div className="m-auto xl:pt-12">
+                <div className="font-bold text-white text-center text-lg px-4">
                   Create a username to join the chat
                 </div>
                 <div>
-                  <div className="w-full overflow-hidden p-4">
+                  <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">
                     <input
                       className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                       id="message"
