@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
-import useChat from "./useChatRoom";
+//import useChat from "./useChatRoom";
+import useChat from "./useChat";
+import useTyping from "./useTyping";
 
 export const Input = tw.input`
   px-4
@@ -69,14 +71,20 @@ const useWindowDimensions = () => {
   return windowDimensions;
 };
 
-const Room = () => {
+const Room = (props) => {
+  const { roomId } = props.match.params;
   const {
     messages,
+    user,
+    users,
+    typingUsers,
     sendMessage,
+    startTypingMessage,
+    stopTypingMessage,
     createUser,
-    loggedIn,
-    setLoggedIn,
-  } = useChat();
+  } = useChat(roomId);
+  const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
+
   const { height, width } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
   const [FEN, setFEN] = useState([]);
@@ -91,7 +99,9 @@ const Room = () => {
     setNewMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+    cancelTyping();
     if (newMessage !== "") {
       sendMessage(newMessage, false);
       setNewMessage("");
@@ -123,7 +133,8 @@ const Room = () => {
 
   useEffect(() => {
     if (!listening) {
-      const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
+      //const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
+      const url = `http://localhost:3030/lichesstv`;
       const source = new EventSource(url);
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
@@ -146,6 +157,11 @@ const Room = () => {
       setListening(true);
     }
   }, [listening, FEN]);
+
+  useEffect(() => {
+    if (isTyping) startTypingMessage();
+    else stopTypingMessage();
+  }, [isTyping]);
 
   return (
     <div
@@ -183,6 +199,7 @@ const Room = () => {
         </div>
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
+            <h1 className="text-lg">Room: {roomId}</h1>
             {logged === true ? (
               <>
                 <ol>
@@ -258,7 +275,6 @@ const Room = () => {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    createUser(userName);
                     setLogged(true);
                     sendMessage(
                       `${userName} just joined the party! Welcome!`,
