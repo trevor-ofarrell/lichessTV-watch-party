@@ -4,6 +4,7 @@ import tw from "twin.macro";
 //import useChat from "./useChatRoom";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
+import SSE from "sse";
 
 export const Input = tw.input`
   px-4
@@ -73,6 +74,7 @@ const useWindowDimensions = () => {
 
 const Room = (props) => {
   const { roomId } = props.match.params;
+  const { name, room } = props.location.state;
   const {
     messages,
     user,
@@ -81,8 +83,8 @@ const Room = (props) => {
     sendMessage,
     startTypingMessage,
     stopTypingMessage,
-    createUser,
-  } = useChat(roomId);
+    addUser,
+  } = useChat(roomId, name);
   const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
 
   const { height, width } = useWindowDimensions();
@@ -134,8 +136,13 @@ const Room = (props) => {
   useEffect(() => {
     if (!listening) {
       //const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
-      const url = `http://localhost:3030/lichesstv`;
-      const source = new EventSource(url);
+      let source;
+      room
+        ? (source = new SSE(`http://localhost:3030/lichesstvcustom`, {
+            headers: { "Content-Type": "text/plain" },
+            payload: room,
+          }))
+        : (source = new EventSource(`http://localhost:3030/lichesstv`));
       source.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         setFEN([parsedData.d.fen]);
@@ -200,7 +207,7 @@ const Room = (props) => {
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <h1 className="text-lg">Room: {roomId}</h1>
-            {logged === true ? (
+            {name ? (
               <>
                 <ol>
                   {messages.map((message, i) => (
@@ -264,7 +271,7 @@ const Room = (props) => {
                       value={userName}
                       onChange={(event) => setUserName(event.target.value)}
                       onSubmit={() => {
-                        createUser(userName);
+                        addUser(userName);
                         setLogged(true);
                       }}
                     />

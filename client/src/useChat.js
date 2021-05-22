@@ -9,26 +9,18 @@ const START_TYPING_MESSAGE_EVENT = "START_TYPING_MESSAGE_EVENT";
 const STOP_TYPING_MESSAGE_EVENT = "STOP_TYPING_MESSAGE_EVENT";
 const SOCKET_SERVER_URL = "http://localhost:3030";
 
-const useChat = (roomId) => {
+const useChat = (roomId, name) => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [user, setUser] = useState();
   const socketRef = useRef();
-  socketRef.current = socketIOClient(SOCKET_SERVER_URL);
-
-  const createUser = (name) => {
-    setUsers(
-      (users) => new Set([...users, { name: name, id: socketRef.current.id }])
-    );
-    setUser({ name: name, id: socketRef.current.id });
-  };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      setUser({ name: "test", id: socketRef.current.id });
+    const fetchUser = () => {
+      socketRef.current = socketIOClient(SOCKET_SERVER_URL);
+      setUser({ name });
     };
-
     fetchUser();
   }, []);
 
@@ -70,7 +62,9 @@ const useChat = (roomId) => {
 
     socketRef.current.on(USER_JOIN_CHAT_EVENT, (user) => {
       if (user.id === socketRef.current.id) return;
+      console.log(user, "user");
       setUsers((users) => [...users, user]);
+      sendMessage(`${user.name} just joined the party! Welcome!`, true);
     });
 
     socketRef.current.on(USER_LEAVE_CHAT_EVENT, (user) => {
@@ -81,7 +75,9 @@ const useChat = (roomId) => {
       const incomingMessage = {
         ...message,
         ownedByCurrentUser: message.senderId === socketRef.current.id,
+        name: user.name,
       };
+      console.log(incomingMessage);
       setMessages((messages) => [...messages, incomingMessage]);
     });
 
@@ -130,6 +126,11 @@ const useChat = (roomId) => {
     });
   };
 
+  const addUser = (name) => {
+    const user = { name };
+    setUsers((users) => [...users, user]);
+  };
+
   return {
     messages,
     user,
@@ -138,7 +139,7 @@ const useChat = (roomId) => {
     sendMessage,
     startTypingMessage,
     stopTypingMessage,
-    createUser,
+    addUser,
   };
 };
 
