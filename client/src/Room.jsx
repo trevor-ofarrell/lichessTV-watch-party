@@ -1,10 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
-//import useChat from "./useChatRoom";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
-import SSE from "sse";
 
 export const Input = tw.input`
   px-4
@@ -74,7 +72,32 @@ const useWindowDimensions = () => {
 
 const Room = (props) => {
   const { roomId } = props.match.params;
-  const { name, room } = props.location.state;
+  const [room, setRoom] = useState("");
+  const [name, setName] = useState("");
+  const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
+  const { height, width } = useWindowDimensions();
+  const [newMessage, setNewMessage] = useState("");
+  const [FEN, setFEN] = useState([]);
+  const [black, setBlack] = useState("");
+  const [white, setWhite] = useState("");
+  const [userName, setUserName] = useState("");
+  const messageRef = useRef();
+  const [listening, setListening] = useState(false);
+  const [logged, setLogged] = useState(false);
+  if (props.location.state) {
+    setName(props.location.state.name);
+    setRoom(props.location.state.room);
+    const {
+      messages,
+      user,
+      users,
+      typingUsers,
+      sendMessage,
+      startTypingMessage,
+      stopTypingMessage,
+      addUser,
+    } = useChat(roomId, name);
+  }
   const {
     messages,
     user,
@@ -85,17 +108,6 @@ const Room = (props) => {
     stopTypingMessage,
     addUser,
   } = useChat(roomId, name);
-  const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
-
-  const { height, width } = useWindowDimensions();
-  const [newMessage, setNewMessage] = useState("");
-  const [FEN, setFEN] = useState([]);
-  const [black, setBlack] = useState("");
-  const [white, setWhite] = useState("");
-  const [userName, setUserName] = useState("");
-  const messageRef = useRef();
-  const [listening, setListening] = useState(false);
-  const [logged, setLogged] = useState(false);
 
   const handleNewMessageChange = (event) => {
     setNewMessage(event.target.value);
@@ -138,29 +150,43 @@ const Room = (props) => {
       //const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
       let source;
       room
-        ? (source = new SSE(`http://localhost:3030/lichesstvcustom`, {
-            headers: { "Content-Type": "text/plain" },
-            payload: room,
-          }))
+        ? (source = new EventSource(
+            `http://localhost:3030/lichesstvcustom/?id=${room}`
+          ))
         : (source = new EventSource(`http://localhost:3030/lichesstv`));
-      source.onmessage = (event) => {
-        const parsedData = JSON.parse(event.data);
-        setFEN([parsedData.d.fen]);
-        if (parsedData.d.players) {
-          createPlayerNames(parsedData.d.players[0], setWhite);
-          createPlayerNames(parsedData.d.players[1], setBlack);
-          sendMessage(
-            `${parsedData.d.players[0].user.name} (white) VS. ${parsedData.d.players[1].user.name} (black)`,
-            true
-          );
-          if (parsedData.d.id) {
+      if (room) {
+        source.onmessage = (event) => {
+          const parsedData = JSON.parse(event.data);
+          console.log(event.data);
+          setFEN([parsedData.fen]);
+          if (parsedData.id) {
             sendMessage(
-              `Game in progress at https://lichess.org/${parsedData.d.id}`,
+              `Game in progress at https://lichess.org/${parsedData.id}`,
               true
             );
           }
-        }
-      };
+        };
+      } else {
+        source.onmessage = (event) => {
+          const parsedData = JSON.parse(event.data);
+          console.log(event.data);
+          setFEN([parsedData.d.fen]);
+          if (parsedData.d.players) {
+            createPlayerNames(parsedData.d.players[0], setWhite);
+            createPlayerNames(parsedData.d.players[1], setBlack);
+            sendMessage(
+              `${parsedData.d.players[0].user.name} (white) VS. ${parsedData.d.players[1].user.name} (black)`,
+              true
+            );
+            if (parsedData.d.id) {
+              sendMessage(
+                `Game in progress at https://lichess.org/${parsedData.d.id}`,
+                true
+              );
+            }
+          }
+        };
+      }
       setListening(true);
     }
   }, [listening, FEN]);
@@ -271,7 +297,6 @@ const Room = (props) => {
                       value={userName}
                       onChange={(event) => setUserName(event.target.value)}
                       onSubmit={() => {
-                        addUser(userName);
                         setLogged(true);
                       }}
                     />
@@ -283,10 +308,8 @@ const Room = (props) => {
                   color="primary"
                   onClick={() => {
                     setLogged(true);
-                    sendMessage(
-                      `${userName} just joined the party! Welcome!`,
-                      true
-                    );
+                    setName(userName);
+                    addUser(userName);
                   }}
                 >
                   Join Chat

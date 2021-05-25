@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const https = require("https");
 const http = require("http");
 const socketIO = require("socket.io");
@@ -46,10 +47,10 @@ io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
 
   // Join a conversation
-  const { roomId, name, picture } = socket.handshake.query;
+  const { roomId, name } = socket.handshake.query;
   socket.join(roomId);
 
-  const user = addUser(socket.id, roomId, name, picture);
+  const user = addUser(socket.id, roomId, name);
   io.in(roomId).emit(USER_JOIN_CHAT_EVENT, user);
 
   // Listen for new messages
@@ -103,7 +104,43 @@ app.get("/lichesstv", async function (req, res) {
       (resp) => {
         resp.on("data", (chunk) => {
           const chunkStr = chunk.toString().trim();
-          res.write(`data: ${chunkStr}\n\n`);
+          if (chunkStr.length) {
+            res.write(`data: ${chunkStr}\n\n`);
+            console.log(chunkStr);
+          }
+        });
+      }
+    );
+    req.on("error", (err) => {
+      throw new Error(err);
+    });
+  }
+  streamEvents();
+});
+
+app.get("/lichesstvcustom", async function (request, res) {
+  res.set({
+    "Cache-Control": "no-cache",
+    "Content-Type": "text/event-stream",
+    Connection: "keep-alive",
+  });
+  res.flushHeaders();
+
+  res.write("retry: 10000\n\n");
+
+  function streamEvents() {
+    req = https.get(
+      `https://lichess.org/api/stream/game/${request.query.id}`,
+      {
+        headers: { Authorization: `Bearer ${process.env.LICHESS_API_TOKEN}` },
+      },
+      (resp) => {
+        resp.on("data", (chunk) => {
+          const chunkStr = chunk.toString().trim();
+          if (chunkStr.length) {
+            res.write(`data: ${chunkStr}\n\n`);
+            console.log(chunkStr);
+          }
         });
       }
     );

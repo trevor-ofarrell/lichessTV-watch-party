@@ -74,10 +74,17 @@ const Home = (props) => {
   const [name, setName] = useState("");
   const history = useHistory();
   const handleClick = () => {
-    history.push({
-      pathname: `/${room}`,
-      state: { name, room },
-    });
+    if (!room.length) {
+      history.push({
+        pathname: `/featured`,
+        state: { name, room },
+      });
+    } else {
+      history.push({
+        pathname: `/${room}`,
+        state: { name, room },
+      });
+    }
   };
 
   return (
