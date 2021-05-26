@@ -30,6 +30,7 @@ const useChat = (roomId, name) => {
         `${SOCKET_SERVER_URL}/rooms/${roomId}/users`
       );
       const result = response.data.users;
+      console.log(result);
       setUsers(result);
     };
 
@@ -77,7 +78,7 @@ const useChat = (roomId, name) => {
         ownedByCurrentUser: message.senderId === socketRef.current.id,
         name: user.name,
       };
-      console.log(incomingMessage);
+      console.log(incomingMessage, user, message.senderId);
       setMessages((messages) => [...messages, incomingMessage]);
     });
 

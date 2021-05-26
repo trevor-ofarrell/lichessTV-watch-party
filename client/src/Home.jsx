@@ -77,12 +77,12 @@ const Home = (props) => {
     if (!room.length) {
       history.push({
         pathname: `/featured`,
-        state: { name, room },
+        state: { name },
       });
     } else {
       history.push({
         pathname: `/${room}`,
-        state: { name, room },
+        state: { name },
       });
     }
   };
@@ -102,7 +102,6 @@ const Home = (props) => {
           variant="outlined"
           value={room}
           onChange={(event) => setRoomName(event.target.value)}
-          onSubmit={() => {}}
         />
       </div>
       <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">

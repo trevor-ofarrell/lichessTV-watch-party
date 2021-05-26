@@ -42,7 +42,6 @@ app.use(
   })
 );
 
-const room = "general";
 io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
 
