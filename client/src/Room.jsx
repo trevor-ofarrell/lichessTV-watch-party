@@ -141,7 +141,7 @@ const Room = (props) => {
       if (roomId !== "featured") {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          console.log(event.data);
+          //console.log(event.data);
           setFEN([parsedData.fen]);
           if (parsedData.id) {
             sendMessage(
@@ -153,7 +153,7 @@ const Room = (props) => {
       } else {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          console.log(event.data);
+          //console.log(event.data);
           setFEN([parsedData.d.fen]);
           if (parsedData.d.players) {
             createPlayerNames(parsedData.d.players[0], setWhite);

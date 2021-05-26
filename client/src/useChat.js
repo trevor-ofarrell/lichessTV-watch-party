@@ -18,8 +18,8 @@ const useChat = (roomId, name) => {
 
   useEffect(() => {
     const fetchUser = () => {
-      socketRef.current = socketIOClient(SOCKET_SERVER_URL);
       setUser({ name });
+      console.log(name, "namebitch");
     };
     fetchUser();
   }, []);
@@ -62,10 +62,9 @@ const useChat = (roomId, name) => {
     });
 
     socketRef.current.on(USER_JOIN_CHAT_EVENT, (user) => {
-      if (user.id === socketRef.current.id) return;
+      if (user.id === `${socketRef.current.id}`) return;
       console.log(user, "user");
       setUsers((users) => [...users, user]);
-      sendMessage(`${user.name} just joined the party! Welcome!`, true);
     });
 
     socketRef.current.on(USER_LEAVE_CHAT_EVENT, (user) => {
@@ -75,22 +74,22 @@ const useChat = (roomId, name) => {
     socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
       const incomingMessage = {
         ...message,
-        ownedByCurrentUser: message.senderId === socketRef.current.id,
-        name: user.name,
+        ownedByCurrentUser:
+          message.senderId === `${socketRef.current.id}${user.name}`,
+        name: message.user?.name,
       };
-      console.log(incomingMessage, user, message.senderId);
       setMessages((messages) => [...messages, incomingMessage]);
     });
 
     socketRef.current.on(START_TYPING_MESSAGE_EVENT, (typingInfo) => {
-      if (typingInfo.senderId !== socketRef.current.id) {
+      if (typingInfo.senderId !== `${socketRef.current.id}${user.name}`) {
         const user = typingInfo.user;
         setTypingUsers((users) => [...users, user]);
       }
     });
 
     socketRef.current.on(STOP_TYPING_MESSAGE_EVENT, (typingInfo) => {
-      if (typingInfo.senderId !== socketRef.current.id) {
+      if (typingInfo.senderId !== `${socketRef.current.id}${user.name}`) {
         const user = typingInfo.user;
         setTypingUsers((users) => users.filter((u) => u.name !== user.name));
       }
@@ -103,12 +102,20 @@ const useChat = (roomId, name) => {
 
   const sendMessage = (messageBody, system) => {
     if (!socketRef.current) return;
-    socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
-      body: messageBody,
-      senderId: socketRef.current.id,
-      user: user,
-      system: system,
-    });
+    if (system === true) {
+      socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
+        body: messageBody,
+        senderId: socketRef.current.id,
+        system: system,
+      });
+    } else {
+      socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
+        body: messageBody,
+        senderId: `${socketRef.current.id}${user.name}`,
+        user: user,
+        system: system,
+      });
+    }
   };
 
   const startTypingMessage = () => {

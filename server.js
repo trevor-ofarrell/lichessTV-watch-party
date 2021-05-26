@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   const { roomId, name } = socket.handshake.query;
   socket.join(roomId);
 
-  const user = addUser(socket.id, roomId, name);
+  const user = addUser(`${socket.id}${name}`, roomId, name);
   io.in(roomId).emit(USER_JOIN_CHAT_EVENT, user);
 
   // Listen for new messages
@@ -105,7 +105,7 @@ app.get("/lichesstv", async function (req, res) {
           const chunkStr = chunk.toString().trim();
           if (chunkStr.length) {
             res.write(`data: ${chunkStr}\n\n`);
-            console.log(chunkStr);
+            //console.log(chunkStr);
           }
         });
       }
@@ -138,7 +138,7 @@ app.get("/lichesstvcustom", async function (request, res) {
           const chunkStr = chunk.toString().trim();
           if (chunkStr.length) {
             res.write(`data: ${chunkStr}\n\n`);
-            console.log(chunkStr);
+            //console.log(chunkStr);
           }
         });
       }
