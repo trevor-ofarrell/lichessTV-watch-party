@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import Room from "./Room";
 import JoinChat from "./JoinChat";
 
@@ -32,7 +31,6 @@ const Chat = (props) => {
   const { height, width } = useWindowDimensions();
   const { roomId } = props.match.params;
   const [name, setName] = useState(props.location.state?.name);
-  const history = useHistory();
 
   const updateName = (name) => {
     setName(name);

@@ -54,10 +54,8 @@ const Room = (props) => {
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState("");
   const [white, setWhite] = useState("");
-  const [userName, setUserName] = useState("");
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
-  const [logged, setLogged] = useState(false);
   const {
     messages,
     user,
@@ -107,13 +105,14 @@ const Room = (props) => {
 
   useEffect(() => {
     if (!listening) {
-      //const url = `https://${process.env.REACT_APP_API_ENDPOINT}/lichesstv`;
       let source;
       roomId !== "featured"
         ? (source = new EventSource(
-            `http://localhost:3030/lichesstvcustom/?id=${roomId}`
+            `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
           ))
-        : (source = new EventSource(`http://localhost:3030/lichesstv`));
+        : (source = new EventSource(
+            `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
+          ));
       if (roomId !== "featured") {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
