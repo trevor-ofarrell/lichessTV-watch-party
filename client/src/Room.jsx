@@ -171,9 +171,7 @@ const Room = (props) => {
             </svg>
           </a>
           <div className="flex m-auto p-2">
-            <h1 className="md:text-xl text-sm text-white pr-1">
-              game in play at:
-            </h1>
+            <h1 className="md:text-xl text-sm text-white pr-1">game:</h1>
             <a
               href={`https://lichess.org/${gameID}`}
               className="md:text-xl text-sm text-white"
