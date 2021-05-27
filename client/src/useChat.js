@@ -7,7 +7,6 @@ const USER_LEAVE_CHAT_EVENT = "USER_LEAVE_CHAT_EVENT";
 const NEW_CHAT_MESSAGE_EVENT = "NEW_CHAT_MESSAGE_EVENT";
 const START_TYPING_MESSAGE_EVENT = "START_TYPING_MESSAGE_EVENT";
 const STOP_TYPING_MESSAGE_EVENT = "STOP_TYPING_MESSAGE_EVENT";
-const SOCKET_SERVER_URL = "http://localhost:3030";
 
 const useChat = (roomId, name) => {
   const [messages, setMessages] = useState([]);
@@ -26,7 +25,7 @@ const useChat = (roomId, name) => {
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await axios.get(
-        `${SOCKET_SERVER_URL}/rooms/${roomId}/users`
+        `${process.env.REACT_APP_API_ENDPOINT}/rooms/${roomId}/users`
       );
       const result = response.data.users;
       console.log(result);
@@ -39,7 +38,7 @@ const useChat = (roomId, name) => {
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await axios.get(
-        `${SOCKET_SERVER_URL}/rooms/${roomId}/messages`
+        `${process.env.REACT_APP_API_ENDPOINT}/rooms/${roomId}/messages`
       );
       const result = response.data.messages;
       setMessages(result);
@@ -52,7 +51,7 @@ const useChat = (roomId, name) => {
     if (!user) {
       return;
     }
-    socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
+    socketRef.current = socketIOClient(process.env.REACT_APP_API_ENDPOINT, {
       query: { roomId, name: user.name },
     });
 
