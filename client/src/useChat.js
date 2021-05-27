@@ -19,7 +19,6 @@ const useChat = (roomId, name) => {
   useEffect(() => {
     const fetchUser = () => {
       setUser({ name });
-      console.log(name, "namebitch");
     };
     fetchUser();
   }, []);

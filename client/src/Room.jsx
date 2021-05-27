@@ -21,30 +21,6 @@ export const Input = tw.input`
 
 export const InputTextLeft = tw(Input)`text-left py-2`;
 
-export const PrimaryButton = ({ className = "", children, ...rest }) => {
-  return (
-    <Button
-      className={`bg-primary-500 hover:bg-primary-300 text-white`}
-      {...rest}
-      data-testid="btn"
-    >
-      {children}
-    </Button>
-  );
-};
-
-export const Button = ({ className = "", children, ...rest }) => {
-  return (
-    <button
-      className={`py-2 px-4 focus:outline-none ring-opacity-75 ring-primary-400 focus:ring text-lg rounded-md`}
-      {...rest}
-      data-testid="btn"
-    >
-      {children}
-    </button>
-  );
-};
-
 const getWindowDimensions = () => {
   const { innerWidth: width, innerHeight: height } = window;
   return {

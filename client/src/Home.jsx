@@ -31,18 +31,6 @@ export const PrimaryButton = ({ className = "", children, ...rest }) => {
   );
 };
 
-export const Button = ({ className = "", children, ...rest }) => {
-  return (
-    <button
-      className={`py-2 px-4 focus:outline-none ring-opacity-75 ring-primary-400 focus:ring text-lg rounded-md`}
-      {...rest}
-      data-testid="btn"
-    >
-      {children}
-    </button>
-  );
-};
-
 const getWindowDimensions = () => {
   const { innerWidth: width, innerHeight: height } = window;
   return {
@@ -90,9 +78,35 @@ const Home = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-gray-900 overflow-hidden"
+      className="bg-gray-900 overflow-hidden"
     >
-      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">
+      <div className="text-white text-2xl text-center p-2 pb-6">
+        lichessTV watch party
+      </div>
+      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto pt-20">
+        <input
+          className="w-full h-10 pl-3 mb-4 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+          id="message"
+          type="text"
+          label="Message"
+          placeholder="create username"
+          variant="outlined"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+
+        <div className="m-auto text-center text-white mb-8">
+          <button
+            onClick={() => handleClick("")}
+            className="border-white border-1 px-20 py-4 mt-4 rounded-lg"
+          >
+            join featured room
+          </button>
+        </div>
+        <div className="text-white text-center p-2 pb-8">
+          or enter a lichess.org game ID to create a room for a specific game in
+          play
+        </div>
         <input
           className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
           id="message"
@@ -104,19 +118,15 @@ const Home = (props) => {
           onChange={(event) => setRoomName(event.target.value)}
         />
       </div>
-      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">
-        <input
-          className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-          id="message"
-          type="text"
-          label="Message"
-          placeholder="enter username"
-          variant="outlined"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
+
+      <div className="m-auto text-center text-white">
+        <button
+          onClick={() => handleClick(name)}
+          className="border-white border-1 px-20 py-4 mt-6 rounded-lg"
+        >
+          create custom room
+        </button>
       </div>
-      <button onClick={() => handleClick(name)}>submit</button>
     </div>
   );
 };
