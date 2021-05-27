@@ -38,7 +38,7 @@ const Chat = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-gray-900 overflow-hidden"
+      className="ml-auto bg-gray-900 overflow-hidden fixed"
     >
       {name ? (
         <Room name={name} roomId={roomId} />

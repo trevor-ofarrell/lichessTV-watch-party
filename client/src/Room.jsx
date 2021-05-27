@@ -153,7 +153,7 @@ const Room = (props) => {
       className="ml-auto bg-gray-900 overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
-        <div className="flex mt-2">
+        <div className="flex md:mt-2">
           <a href="/" className="m-auto md:pr-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"

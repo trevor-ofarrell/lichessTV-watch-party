@@ -78,7 +78,7 @@ const Home = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="bg-gray-900 overflow-hidden"
+      className="bg-gray-900 overflow-hidden fixed"
     >
       <div className="text-white text-2xl text-center p-2 pb-6">
         lichessTV watch party
