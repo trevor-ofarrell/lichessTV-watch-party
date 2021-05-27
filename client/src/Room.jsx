@@ -3,6 +3,7 @@ import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
+import { parse } from "dotenv";
 
 export const Input = tw.input`
   px-4
@@ -51,6 +52,7 @@ const Room = (props) => {
   const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
   const { height, width } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
+  const [gameID, setGameID] = useState("");
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState("");
   const [white, setWhite] = useState("");
@@ -118,15 +120,21 @@ const Room = (props) => {
           const parsedData = JSON.parse(event.data);
           //console.log(event.data);
           setFEN([parsedData.fen]);
+          if (parsedData.id) {
+            setGameID(parsedData.id);
+          }
         };
       } else {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          //console.log(event.data);
+          console.log(event.data);
           setFEN([parsedData.d.fen]);
           if (parsedData.d.players) {
             createPlayerNames(parsedData.d.players[0], setWhite);
             createPlayerNames(parsedData.d.players[1], setBlack);
+          }
+          if (parsedData.d.id) {
+            setGameID(parsedData.d.id);
           }
         };
       }
@@ -145,6 +153,39 @@ const Room = (props) => {
       className="ml-auto bg-gray-900 overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
+        <div className="flex mt-2">
+          <a href="/" className="m-auto md:pr-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="md:h-10 md:w-10 h-6 w-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+          </a>
+          <div className="flex m-auto p-2">
+            <h1 className="md:text-xl text-sm text-white pr-1">
+              game in play at:
+            </h1>
+            <a
+              href={`https://lichess.org/${gameID}`}
+              className="md:text-xl text-sm text-white"
+            >
+              lichess.org/{gameID}
+            </a>
+          </div>
+          <h1 className="md:text-xl text-sm text-white p-2 m-auto">
+            room: {roomId}
+          </h1>
+        </div>
+
         <div className="sm:mt-auto overflow-hidden m-auto">
           <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
             FEN: {FEN}
@@ -175,7 +216,6 @@ const Room = (props) => {
         </div>
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
-            <h1 className="text-lg">Room: {roomId}</h1>
             <>
               <ol>
                 {messages.map((message, i) => (

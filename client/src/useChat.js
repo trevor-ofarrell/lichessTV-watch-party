@@ -28,7 +28,6 @@ const useChat = (roomId, name) => {
         `${process.env.REACT_APP_API_ENDPOINT}/rooms/${roomId}/users`
       );
       const result = response.data.users;
-      console.log(result);
       setUsers(result);
     };
 
