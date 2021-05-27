@@ -21,6 +21,30 @@ export const Input = tw.input`
 
 export const InputTextLeft = tw(Input)`text-left py-2`;
 
+export const PrimaryButton = ({ className = "", children, ...rest }) => {
+  return (
+    <Button
+      className={`bg-primary-500 hover:bg-primary-300 text-white`}
+      {...rest}
+      data-testid="btn"
+    >
+      {children}
+    </Button>
+  );
+};
+
+export const Button = ({ className = "", children, ...rest }) => {
+  return (
+    <button
+      className={`py-2 px-4 focus:outline-none ring-opacity-75 ring-primary-400 focus:ring text-lg rounded-md`}
+      {...rest}
+      data-testid="btn"
+    >
+      {children}
+    </button>
+  );
+};
+
 const getWindowDimensions = () => {
   const { innerWidth: width, innerHeight: height } = window;
   return {
@@ -46,8 +70,9 @@ const useWindowDimensions = () => {
   return windowDimensions;
 };
 
-const Room = (props) => {
-  const { roomId, name } = props;
+const JoinChat = (props) => {
+  const { roomId, onNameUpdate } = props;
+  const [name, setName] = useState("");
   const { isTyping, startTyping, stopTyping, cancelTyping } = useTyping();
   const { height, width } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
@@ -57,7 +82,6 @@ const Room = (props) => {
   const [userName, setUserName] = useState("");
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
-  const [logged, setLogged] = useState(false);
   const {
     messages,
     user,
@@ -68,19 +92,6 @@ const Room = (props) => {
     stopTypingMessage,
     addUser,
   } = useChat(roomId, name);
-
-  const handleNewMessageChange = (event) => {
-    setNewMessage(event.target.value);
-  };
-
-  const handleSendMessage = (event) => {
-    event.preventDefault();
-    cancelTyping();
-    if (newMessage !== "") {
-      sendMessage(newMessage, false);
-      setNewMessage("");
-    }
-  };
 
   const handleKeyUp = (event) => {
     if (event.key === "Enter") {
@@ -117,13 +128,13 @@ const Room = (props) => {
       if (roomId !== "featured") {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          //console.log(event.data);
+          console.log(event.data);
           setFEN([parsedData.fen]);
         };
       } else {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          //console.log(event.data);
+          console.log(event.data);
           setFEN([parsedData.d.fen]);
           if (parsedData.d.players) {
             createPlayerNames(parsedData.d.players[0], setWhite);
@@ -134,11 +145,6 @@ const Room = (props) => {
       setListening(true);
     }
   }, [listening, FEN]);
-
-  useEffect(() => {
-    if (isTyping) startTypingMessage();
-    else stopTypingMessage();
-  }, [isTyping]);
 
   return (
     <div
@@ -177,52 +183,38 @@ const Room = (props) => {
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <h1 className="text-lg">Room: {roomId}</h1>
-            <>
-              <ol>
-                {messages.map((message, i) => (
-                  <li key={i}>
-                    {message.system === true ? (
-                      <div className="text-center text-gray-500 text-sm">
-                        {message.body}
-                      </div>
-                    ) : (
-                      <span className="text-left text-white text-sm flex">
-                        {message.name ? (
-                          <div className="font-bold text-primary-400 mr-1">
-                            {message.name}:
-                          </div>
-                        ) : (
-                          <>{""}</>
-                        )}
-                        {message.body}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ol>
-              <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
-                <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
-                  id="message"
-                  type="text"
-                  label="Message"
-                  placeholder="enter message here"
-                  variant="outlined"
-                  value={newMessage}
-                  onChange={handleNewMessageChange}
-                  onKeyUp={handleKeyUp}
-                />
-                <button
-                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-purple-800 rounded-r-lg hover:bg-purple-900 focus:bg-purple-900"
-                  disabled={!newMessage}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSendMessage}
-                >
-                  Send
-                </button>
+
+            <div className="m-auto xl:pt-12">
+              <div className="font-bold text-white text-center text-lg px-4">
+                Create a username to join the chat
               </div>
-            </>
+              <div>
+                <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">
+                  <input
+                    className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    id="message"
+                    type="text"
+                    label="Message"
+                    placeholder="enter username"
+                    variant="outlined"
+                    value={userName}
+                    onChange={(event) => setUserName(event.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setName(userName);
+                  onNameUpdate(userName);
+                  addUser(userName);
+                }}
+              >
+                Join Chat
+              </button>
+            </div>
             <div ref={messageRef}></div>
           </div>
         </div>
@@ -231,4 +223,4 @@ const Room = (props) => {
   );
 };
 
-export default Room;
+export default JoinChat;
