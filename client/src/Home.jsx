@@ -83,7 +83,7 @@ const Home = (props) => {
       <div className="text-white text-2xl text-center p-2 pb-6">
         lichessTV watch party
       </div>
-      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto pt-20">
+      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto md:pt-20 pt-10">
         <input
           className="w-full h-10 pl-3 mb-4 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
           id="message"
@@ -94,7 +94,6 @@ const Home = (props) => {
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
-
         <div className="m-auto text-center text-white mb-8">
           <button
             onClick={() => handleClick("")}
@@ -118,7 +117,6 @@ const Home = (props) => {
           onChange={(event) => setRoomName(event.target.value)}
         />
       </div>
-
       <div className="m-auto text-center text-white">
         <button
           onClick={() => handleClick(name)}
@@ -126,6 +124,21 @@ const Home = (props) => {
         >
           create custom room
         </button>
+      </div>
+      <div className="text-center fixed w-full bottom-0 border-t-1 text-white p-4 flex">
+        <a
+          href="https://lichess.org/api"
+          className="lg:text-xl text-sm text-white underline m-auto"
+        >
+          moves streamed using the lichess.org API
+        </a>
+        <h1 className="md:text-xl text-sm px-2">-</h1>
+        <a
+          href="https://github.com/trevor-ofarrell/lichessTV-watch-party"
+          className="lg:text-xl text-sm text-white underline m-auto"
+        >
+          check out the source code on my GitHub
+        </a>
       </div>
     </div>
   );
