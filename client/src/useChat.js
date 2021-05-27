@@ -61,7 +61,7 @@ const useChat = (roomId, name) => {
     });
 
     socketRef.current.on(USER_JOIN_CHAT_EVENT, (user) => {
-      if (user.id === `${socketRef.current.id}`) return;
+      if (user.id === `${socketRef.current.id}${user.name}`) return;
       console.log(user, "user");
       setUsers((users) => [...users, user]);
     });

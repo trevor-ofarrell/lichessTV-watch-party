@@ -119,12 +119,6 @@ const Room = (props) => {
           const parsedData = JSON.parse(event.data);
           //console.log(event.data);
           setFEN([parsedData.fen]);
-          if (parsedData.id) {
-            sendMessage(
-              `Game in progress at https://lichess.org/${parsedData.id}`,
-              true
-            );
-          }
         };
       } else {
         source.onmessage = (event) => {
@@ -134,16 +128,6 @@ const Room = (props) => {
           if (parsedData.d.players) {
             createPlayerNames(parsedData.d.players[0], setWhite);
             createPlayerNames(parsedData.d.players[1], setBlack);
-            sendMessage(
-              `${parsedData.d.players[0].user.name} (white) VS. ${parsedData.d.players[1].user.name} (black)`,
-              true
-            );
-            if (parsedData.d.id) {
-              sendMessage(
-                `Game in progress at https://lichess.org/${parsedData.d.id}`,
-                true
-              );
-            }
           }
         };
       }
