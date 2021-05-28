@@ -3,7 +3,6 @@ import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
-import { parse } from "dotenv";
 
 export const Input = tw.input`
   px-4
@@ -103,6 +102,18 @@ const Room = (props) => {
     }
   };
 
+  const selectRandomColor = () => {
+    colors = [
+      "text-green-400",
+      "text-purple-400",
+      "text-pink-400",
+      "text-red-400",
+      "text-blue-400",
+      "text-orange-400",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
   useEffect(() => {
@@ -150,42 +161,44 @@ const Room = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-gray-900 overflow-hidden"
+      className="ml-auto bg-black overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
-        <div className="flex md:mt-2">
-          <a href="/" className="m-auto md:pr-6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="md:h-10 md:w-10 h-6 w-6 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-          </a>
-          <div className="flex m-auto p-2">
-            <h1 className="md:text-xl text-sm text-white pr-1">game:</h1>
-            <a
-              href={`https://lichess.org/${gameID}`}
-              className="md:text-xl text-sm text-white"
-            >
-              lichess.org/{gameID}
-            </a>
+        <a
+          href="/"
+          className="md:left-4 md:top-4 left-2 top-2 absolute md:pr-6 hidden md:flex"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="md:h-10 md:w-10 h-8 w-8 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            />
+          </svg>
+        </a>
+        <div className="sm:mt-auto overflow-hidden m-auto mt-0">
+          <div className="flex md:mt-2">
+            <div className="flex mr-auto p-2 pl-0">
+              <h1 className="md:text-xl text-sm text-white pr-1">game:</h1>
+              <a
+                href={`https://lichess.org/${gameID}`}
+                className="md:text-xl text-sm text-white"
+              >
+                lichess.org/{gameID}
+              </a>
+            </div>
+            <h1 className="md:text-xl text-sm text-white p-2 m-auto">
+              room: {roomId}
+            </h1>
           </div>
-          <h1 className="md:text-xl text-sm text-white p-2 m-auto">
-            room: {roomId}
-          </h1>
-        </div>
-
-        <div className="sm:mt-auto overflow-hidden m-auto">
-          <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
+          <div className="font-medium md:text-sm md:pl-0 text-xs pl-6 text-white max-w-50% text-left break-all hidden md:flex">
             FEN: {FEN}
           </div>
           <div className="m-auto">
@@ -212,7 +225,7 @@ const Room = (props) => {
             </div>
           </div>
         </div>
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-black ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <>
               <ol>
@@ -225,7 +238,9 @@ const Room = (props) => {
                     ) : (
                       <span className="text-left text-white text-sm flex">
                         {message.name ? (
-                          <div className="font-bold text-primary-400 mr-1">
+                          <div
+                            className={`font-bold ${message.user.color} mr-1`}
+                          >
                             {message.name}:
                           </div>
                         ) : (
@@ -239,7 +254,7 @@ const Room = (props) => {
               </ol>
               <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
                 <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 border bg-gray-700 rounded-lg focus:shadow-outline"
                   id="message"
                   type="text"
                   label="Message"
@@ -250,7 +265,7 @@ const Room = (props) => {
                   onKeyUp={handleKeyUp}
                 />
                 <button
-                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-purple-800 rounded-r-lg hover:bg-purple-900 focus:bg-purple-900"
+                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-yellow-600 rounded-r-lg hover:bg-blue-500"
                   disabled={!newMessage}
                   variant="contained"
                   color="primary"

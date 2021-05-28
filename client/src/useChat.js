@@ -15,9 +15,26 @@ const useChat = (roomId, name) => {
   const [user, setUser] = useState();
   const socketRef = useRef();
 
+  const selectRandomColor = () => {
+    const colors = [
+      "text-green-500",
+      "text-purple-500",
+      "text-pink-500",
+      "text-red-500",
+      "text-red-700",
+      "text-blue-500",
+      "text-blue-300",
+      "text-green-400",
+      "text-pink-700",
+      "text-primary-500",
+      "text-orange-500",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   useEffect(() => {
     const fetchUser = () => {
-      setUser({ name });
+      setUser({ name, color: selectRandomColor() });
     };
     fetchUser();
   }, []);
@@ -60,7 +77,6 @@ const useChat = (roomId, name) => {
 
     socketRef.current.on(USER_JOIN_CHAT_EVENT, (user) => {
       if (user.id === `${socketRef.current.id}${user.name}`) return;
-      console.log(user, "user");
       setUsers((users) => [...users, user]);
     });
 
@@ -111,6 +127,7 @@ const useChat = (roomId, name) => {
         senderId: `${socketRef.current.id}${user.name}`,
         user: user,
         name: user?.name,
+        color: user?.color,
         system: system,
       });
     }
