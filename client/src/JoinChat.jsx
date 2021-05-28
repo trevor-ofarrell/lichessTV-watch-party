@@ -150,7 +150,7 @@ const JoinChat = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-gray-900 overflow-hidden"
+      className="ml-auto bg-black overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
         <div className="sm:mt-auto overflow-hidden m-auto">
@@ -181,7 +181,7 @@ const JoinChat = (props) => {
             </div>
           </div>
         </div>
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-gray-900 ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-black ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <h1 className="text-lg">Room: {roomId}</h1>
 
@@ -192,7 +192,7 @@ const JoinChat = (props) => {
               <div>
                 <div className="xl:w-full w-80 overflow-hidden p-4 m-auto">
                   <input
-                    className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+                    className="w-full h-10 pl-3 text-base bg-gray-700 placeholder-white border rounded-lg focus:shadow-outline"
                     id="message"
                     type="text"
                     label="Message"
@@ -204,7 +204,7 @@ const JoinChat = (props) => {
                 </div>
               </div>
               <button
-                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:bg-green-600"
+                className="h-12 m-auto flex items-center px-4 font-bold text-white bg-yellow-600 rounded-lg hover:bg-green-600 focus:bg-green-600"
                 variant="contained"
                 color="primary"
                 onClick={() => {

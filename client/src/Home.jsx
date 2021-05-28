@@ -78,14 +78,14 @@ const Home = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="bg-gray-900 overflow-hidden fixed"
+      className="bg-black overflow-hidden fixed"
     >
       <div className="text-white text-2xl text-center p-2 pb-6">
         lichessTV watch party
       </div>
       <div className="xl:w-full w-80 overflow-hidden p-4 m-auto md:pt-20 pt-10">
         <input
-          className="w-full h-10 pl-3 mb-4 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+          className="w-full h-10 pl-3 mb-4 text-base bg-gray-700 placeholder-white border rounded-lg focus:shadow-outline"
           id="message"
           type="text"
           label="Message"
@@ -107,7 +107,7 @@ const Home = (props) => {
           play
         </div>
         <input
-          className="w-full h-10 pl-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
+          className="w-full h-10 pl-3 text-base bg-gray-700 placeholder-white border rounded-lg focus:shadow-outline"
           id="message"
           type="text"
           label="Message"
