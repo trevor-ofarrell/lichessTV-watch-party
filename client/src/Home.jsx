@@ -78,14 +78,14 @@ const Home = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="bg-black overflow-hidden fixed"
+      className="bg-scheme-dark overflow-hidden fixed"
     >
-      <div className="text-white text-2xl text-center p-2 pb-6">
+      <div className="text-scheme-orange text-3xl text-center p-2 pb-6">
         lichessTV watch party
       </div>
-      <div className="xl:w-full w-80 overflow-hidden p-4 m-auto md:pt-20 pt-10">
+      <div className="xl:w-full md:w-3/5 w-80 overflow-hidden p-4 m-auto md:pt-20 pt-10">
         <input
-          className="w-full h-10 pl-3 mb-4 text-base bg-gray-700 placeholder-white border rounded-lg focus:shadow-outline"
+          className="w-full h-10 pl-3 mb-4 text-base bg-scheme-light placeholder-gray-500 text-gray-500 border rounded-lg focus:shadow-outline"
           id="message"
           type="text"
           label="Message"
@@ -97,17 +97,17 @@ const Home = (props) => {
         <div className="m-auto text-center text-white mb-8">
           <button
             onClick={() => handleClick("")}
-            className="border-white border-1 px-20 py-4 mt-4 rounded-lg"
+            className="border-scheme-orange border-1 px-20 py-4 mt-4 rounded-lg"
           >
             join featured room
           </button>
         </div>
-        <div className="text-white text-center p-2 pb-8">
+        <div className="text-scheme-orange text-center p-2 pb-8">
           or enter a lichess.org game ID to create a room for a specific game in
           play
         </div>
         <input
-          className="w-full h-10 pl-3 text-base bg-gray-700 placeholder-white border rounded-lg focus:shadow-outline"
+          className="w-full h-10 pl-3 text-base bg-scheme-light placeholder-gray-500 text-gray-500 border rounded-lg focus:shadow-outline"
           id="message"
           type="text"
           label="Message"
@@ -120,22 +120,22 @@ const Home = (props) => {
       <div className="m-auto text-center text-white">
         <button
           onClick={() => handleClick(name)}
-          className="border-white border-1 px-20 py-4 mt-6 rounded-lg"
+          className="border-scheme-orange border-1 px-20 py-4 mt-6 rounded-lg"
         >
           create custom room
         </button>
       </div>
-      <div className="text-center fixed w-full bottom-0 border-t-1 text-white p-4 flex">
+      <div className="text-center fixed w-full bottom-0 text-scheme-orange p-4 flex">
         <a
           href="https://lichess.org/api"
-          className="lg:text-xl text-sm text-white underline m-auto"
+          className="lg:text-xl text-sm  underline m-auto"
         >
           moves streamed using the lichess.org API
         </a>
         <h1 className="md:text-xl text-sm px-2">-</h1>
         <a
           href="https://github.com/trevor-ofarrell/lichessTV-watch-party"
-          className="lg:text-xl text-sm text-white underline m-auto"
+          className="lg:text-xl text-sm underline m-auto"
         >
           check out the source code on my GitHub
         </a>

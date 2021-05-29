@@ -53,8 +53,8 @@ const Room = (props) => {
   const [newMessage, setNewMessage] = useState("");
   const [gameID, setGameID] = useState("");
   const [FEN, setFEN] = useState([]);
-  const [black, setBlack] = useState("");
-  const [white, setWhite] = useState("");
+  const [black, setBlack] = useState({});
+  const [white, setWhite] = useState({});
   const messageRef = useRef();
   const [listening, setListening] = useState(false);
   const {
@@ -91,15 +91,11 @@ const Room = (props) => {
   };
 
   const createPlayerNames = (user, setPlayer) => {
-    let username = "";
-    if (user.user.name) {
-      if (user.user.title) {
-        username = user.user.title + " " + user.user.name + " " + user.rating;
-      } else {
-        username = user.user.name + " " + user.rating;
-      }
-      setPlayer(username);
-    }
+    setPlayer({
+      name: user.user.name,
+      title: user.user.title,
+      rating: String(user.rating),
+    });
   };
 
   const selectRandomColor = () => {
@@ -161,7 +157,7 @@ const Room = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-black overflow-hidden"
+      className="ml-auto bg-scheme-dark overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
         <a
@@ -170,7 +166,7 @@ const Room = (props) => {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="md:h-10 md:w-10 h-8 w-8 text-white"
+            className="md:h-10 md:w-10 h-8 w-8 text-scheme-orange"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -184,26 +180,26 @@ const Room = (props) => {
           </svg>
         </a>
         <div className="sm:mt-auto overflow-hidden m-auto mt-0">
-          <div className="flex md:mt-2">
+          <div className="flex md:mt-2 text-gray-400">
             <div className="flex mr-auto p-2 pl-0">
-              <h1 className="md:text-xl text-sm text-white pr-1">game:</h1>
+              <h1 className="md:text-xl text-sm pr-1">game:</h1>
               <a
                 href={`https://lichess.org/${gameID}`}
-                className="md:text-xl text-sm text-white"
+                className="md:text-xl text-sm underline  "
               >
                 lichess.org/{gameID}
               </a>
             </div>
-            <h1 className="md:text-xl text-sm text-white p-2 m-auto">
-              room: {roomId}
-            </h1>
+            <h1 className="md:text-xl text-sm p-2 ml-auto">room: {roomId}</h1>
           </div>
-          <div className="font-medium md:text-sm md:pl-0 text-xs pl-6 text-white max-w-50% text-left break-all hidden md:flex">
+          <div className="font-medium md:text-sm md:pl-0 text-xs pl-6 text-gray-400 max-w-50% text-left break-all hidden md:flex">
             FEN: {FEN}
           </div>
           <div className="m-auto">
-            <div className="font-medium md:text-2xl text-lg my-1 text-white">
-              {black}
+            <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
+              <div className="text-scheme-orange">{black.title}&nbsp;</div>
+              <div>{black.name}&nbsp;</div>
+              <div className="text-gray-500">{black.rating}</div>
             </div>
             <div className="m-auto">
               <Chessboard
@@ -219,13 +215,14 @@ const Room = (props) => {
                 }
               />
             </div>
-            <div className="font-medium md:text-2xl text-lg my-1 text-white">
-              {" "}
-              {white}
+            <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
+              <div className="text-scheme-orange">{white.title}&nbsp;</div>
+              <div>{white.name}&nbsp;</div>
+              <div className="text-gray-500">{white.rating}</div>
             </div>
           </div>
         </div>
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-black ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <>
               <ol>
@@ -254,7 +251,7 @@ const Room = (props) => {
               </ol>
               <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
                 <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 border bg-gray-700 rounded-lg focus:shadow-outline"
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 text-gray-500 border bg-scheme-light rounded-lg"
                   id="message"
                   type="text"
                   label="Message"
@@ -265,7 +262,7 @@ const Room = (props) => {
                   onKeyUp={handleKeyUp}
                 />
                 <button
-                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-yellow-600 rounded-r-lg hover:bg-blue-500"
+                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-scheme-orange rounded-r-lg hover:bg-blue-500"
                   disabled={!newMessage}
                   variant="contained"
                   color="primary"
