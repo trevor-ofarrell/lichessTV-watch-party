@@ -262,7 +262,7 @@ const Room = (props) => {
                   onKeyUp={handleKeyUp}
                 />
                 <button
-                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-scheme-orange rounded-r-lg hover:bg-blue-500"
+                  className="absolute inset-y-0 h-10 right-0 flex items-center px-4 font-bold text-white bg-scheme-orange rounded-r-lg"
                   disabled={!newMessage}
                   variant="contained"
                   color="primary"
