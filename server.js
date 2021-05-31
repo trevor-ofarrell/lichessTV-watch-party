@@ -6,6 +6,7 @@ const http = require("http");
 const socketIO = require("socket.io");
 const { addUser, removeUser, getUsersInRoom } = require("./users");
 const { addMessage, getMessagesInRoom } = require("./messages");
+const { resolve } = require("path");
 
 const PORT = 3030;
 const NEW_MESSAGE_EVENT = "new-message-event";
@@ -138,7 +139,7 @@ app.get("/lichesstvcustom", async function (request, res) {
           const chunkStr = chunk.toString().trim();
           if (chunkStr.length) {
             res.write(`data: ${chunkStr}\n\n`);
-            //console.log(chunkStr);
+            console.log(chunkStr);
           }
         });
       }
@@ -148,6 +149,25 @@ app.get("/lichesstvcustom", async function (request, res) {
     });
   }
   streamEvents();
+});
+
+app.get("/pgn", async function (req, res) {
+  req = https.get(
+    `https://lichess.org/game/export/${req.query.id}`,
+    {
+      headers: { Authorization: `Bearer ${process.env.LICHESS_API_TOKEN}` },
+    },
+    (resp) => {
+      resp.setEncoding("utf8");
+      resp.on("data", function (chunk) {
+        console.log(chunk);
+        resolve(chunk);
+      });
+    }
+  );
+  req.on("error", (err) => {
+    throw new Error(err);
+  });
 });
 
 server.listen(PORT, () => {
