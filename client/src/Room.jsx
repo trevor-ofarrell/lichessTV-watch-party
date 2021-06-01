@@ -99,16 +99,22 @@ const Room = (props) => {
 
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
+  let pgnData = {};
   useEffect(async () => {
     if (!listening) {
       let source;
       if (roomId !== "featured") {
-        let pgnData = {};
-        if (!pgnData.length) {
+        if (pgnData.id !== roomId) {
           pgnData = await fetch(
             `http://localhost:3030/pgn/?id=${roomId}`
           ).then((res) => res.json());
           console.log(pgnData);
+          console.log("this is an API req");
+          if (pgnData.players.black) {
+            createPlayerNames(pgnData.players.white, setWhite);
+            createPlayerNames(pgnData.players.black, setBlack);
+            console.log("users", pgnData.players.black.user.name);
+          }
         }
         source = new EventSource(
           `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
@@ -119,11 +125,6 @@ const Room = (props) => {
           setFEN([parsedData.fen]);
           if (parsedData.id) {
             setGameID(parsedData.id);
-          }
-          if (pgnData.players.black) {
-            createPlayerNames(pgnData.players.white, setWhite);
-            createPlayerNames(pgnData.players.black, setBlack);
-            console.log("users", pgnData.players.black.user.name);
           }
         };
       } else {
