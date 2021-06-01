@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 
-const createPlayerNames = (user, setPlayer) => {
-  let username = "";
-  if (user.user.name) {
-    if (user.user.title) {
-      username = user.user.title + " " + user.user.name + " " + user.rating;
-    } else {
-      username = user.user.name + " " + user.rating;
-    }
-    setPlayer(username);
-  }
+const createPlayerObject = (user, setPlayer) => {
+  setPlayer({
+    name: user.user.name,
+    title: user.user.title,
+    rating: String(user.rating),
+  });
 };
 
 export const Board = (props) => {
   const { roomId } = props;
   const [FEN, setFEN] = useState([]);
-  const [black, setBlack] = useState("");
-  const [white, setWhite] = useState("");
-  const [gameID, setGameID] = useState("");
+  const [black, setBlack] = useState({});
+  const [white, setWhite] = useState({});
   const [listening, setListening] = useState(false);
 
   let pgnData = {};
@@ -28,14 +23,11 @@ export const Board = (props) => {
       if (roomId !== "featured") {
         if (pgnData.id !== roomId) {
           pgnData = await fetch(
-            `${process.env.REACT_APP_API_ENDPOINT}/pgn/?id=${roomId}`
+            `http://localhost:3030/pgn/?id=${roomId}`
           ).then((res) => res.json());
-          console.log(pgnData);
-          console.log("this is an API req");
           if (pgnData.players.black) {
-            createPlayerNames(pgnData.players.white, setWhite);
-            createPlayerNames(pgnData.players.black, setBlack);
-            console.log("users", pgnData.players.black.user.name);
+            createPlayerObject(pgnData.players.white, setWhite);
+            createPlayerObject(pgnData.players.black, setBlack);
           }
         }
         source = new EventSource(
@@ -43,11 +35,7 @@ export const Board = (props) => {
         );
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          //console.log(event.data);
           setFEN([parsedData.fen]);
-          if (parsedData.id) {
-            setGameID(parsedData.id);
-          }
         };
       } else {
         source = new EventSource(
@@ -55,14 +43,10 @@ export const Board = (props) => {
         );
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          console.log(event.data);
           setFEN([parsedData.d.fen]);
           if (parsedData.d.players) {
-            createPlayerNames(parsedData.d.players[0], setWhite);
-            createPlayerNames(parsedData.d.players[1], setBlack);
-          }
-          if (parsedData.d.id) {
-            setGameID(parsedData.d.id);
+            createPlayerObject(parsedData.d.players[0], setWhite);
+            createPlayerObject(parsedData.d.players[1], setBlack);
           }
         };
       }
@@ -76,8 +60,10 @@ export const Board = (props) => {
         FEN: {FEN}
       </div>
       <div className="m-auto">
-        <div className="font-medium md:text-2xl text-lg my-1 text-white">
-          {black}
+        <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
+          <div className="text-scheme-orange">{black.title}&nbsp;</div>
+          <div>{black.name}&nbsp;</div>
+          <div className="text-gray-500">{black.rating}</div>
         </div>
         <div className="m-auto">
           <Chessboard
@@ -93,9 +79,10 @@ export const Board = (props) => {
             }
           />
         </div>
-        <div className="font-medium md:text-2xl text-lg my-1 text-white">
-          {" "}
-          {white}
+        <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
+          <div className="text-scheme-orange">{white.title}&nbsp;</div>
+          <div>{white.name}&nbsp;</div>
+          <div className="text-gray-500">{white.rating}</div>
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import tw from "twin.macro";
+
 export const Input = tw.input`
   px-4
   py-2

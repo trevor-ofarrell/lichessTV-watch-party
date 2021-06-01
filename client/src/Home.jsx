@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import tw from "twin.macro";
+import useWindowDimensions from "./hooks/WindowDimensions";
 
 export const Input = tw.input`
   px-4
@@ -31,31 +32,6 @@ export const PrimaryButton = ({ className = "", children, ...rest }) => {
   );
 };
 
-const getWindowDimensions = () => {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-};
-
-const useWindowDimensions = () => {
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions());
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowDimensions;
-};
-
 const Home = (props) => {
   const { height, width } = useWindowDimensions();
   const [room, setRoomName] = useState("");
@@ -70,7 +46,7 @@ const Home = (props) => {
     } else {
       history.push({
         pathname: `/${room}`,
-        state: { name },
+        state: { name, roomId: room },
       });
     }
   };

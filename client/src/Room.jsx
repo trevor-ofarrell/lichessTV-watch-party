@@ -1,50 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import Chessboard from "chessboardjsx";
-import tw from "twin.macro";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
-
-export const Input = tw.input`
-  px-4
-  py-2
-  placeholder-gray-500
-  w-auto
-  lg:mx-auto
-  focus:ring-primary-100
-  focus:border-primary-500
-  border-gray-400
-  border-width[1px]
-  border-solid
-  rounded-md
-  shadow-xs
-`;
-
-export const InputTextLeft = tw(Input)`text-left py-2`;
-
-const getWindowDimensions = () => {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-};
-
-const useWindowDimensions = () => {
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions());
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowDimensions;
-};
+import useWindowDimensions from "./hooks/WindowDimensions";
+import { Board } from "./components/Board";
 
 const Room = (props) => {
   const { roomId, name } = props;
@@ -52,11 +10,7 @@ const Room = (props) => {
   const { height, width } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
   const [gameID, setGameID] = useState("");
-  const [FEN, setFEN] = useState([]);
-  const [black, setBlack] = useState({});
-  const [white, setWhite] = useState({});
   const messageRef = useRef();
-  const [listening, setListening] = useState(false);
   const {
     messages,
     user,
@@ -89,64 +43,7 @@ const Room = (props) => {
     }
   };
 
-  const createPlayerNames = (user, setPlayer) => {
-    setPlayer({
-      name: user.user.name,
-      title: user.user.title,
-      rating: String(user.rating),
-    });
-  };
-
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
-
-  let pgnData = {};
-  useEffect(async () => {
-    if (!listening) {
-      let source;
-      if (roomId !== "featured") {
-        if (pgnData.id !== roomId) {
-          pgnData = await fetch(
-            `http://localhost:3030/pgn/?id=${roomId}`
-          ).then((res) => res.json());
-          console.log(pgnData);
-          console.log("this is an API req");
-          if (pgnData.players.black) {
-            createPlayerNames(pgnData.players.white, setWhite);
-            createPlayerNames(pgnData.players.black, setBlack);
-            console.log("users", pgnData.players.black.user.name);
-          }
-        }
-        source = new EventSource(
-          `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
-        );
-        source.onmessage = (event) => {
-          const parsedData = JSON.parse(event.data);
-          //console.log(event.data);
-          setFEN([parsedData.fen]);
-          if (parsedData.id) {
-            setGameID(parsedData.id);
-          }
-        };
-      } else {
-        source = new EventSource(
-          `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
-        );
-        source.onmessage = (event) => {
-          const parsedData = JSON.parse(event.data);
-          console.log(event.data);
-          setFEN([parsedData.d.fen]);
-          if (parsedData.d.players) {
-            createPlayerNames(parsedData.d.players[0], setWhite);
-            createPlayerNames(parsedData.d.players[1], setBlack);
-          }
-          if (parsedData.d.id) {
-            setGameID(parsedData.d.id);
-          }
-        };
-      }
-      setListening(true);
-    }
-  }, [listening, FEN]);
 
   useEffect(() => {
     if (isTyping) startTypingMessage();
@@ -191,35 +88,7 @@ const Room = (props) => {
             </div>
             <h1 className="md:text-xl text-sm p-2 ml-auto">room: {roomId}</h1>
           </div>
-          <div className="font-medium md:text-sm md:pl-0 text-xs pl-6 text-gray-400 max-w-50% text-left break-all hidden md:flex">
-            FEN: {FEN}
-          </div>
-          <div className="m-auto">
-            <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
-              <div className="text-scheme-orange">{black.title}&nbsp;</div>
-              <div>{black.name}&nbsp;</div>
-              <div className="text-gray-500">{black.rating}</div>
-            </div>
-            <div className="m-auto">
-              <Chessboard
-                position={FEN[0]}
-                transitionDuration={100}
-                showNotation={false}
-                calcWidth={(size) =>
-                  size.screenWidth < 1440
-                    ? (size.screenHeight / 100) * 46
-                    : size.screenWidth > 1440
-                    ? (size.screenHeight / 100) * 70
-                    : (screen.width / 100) * 100
-                }
-              />
-            </div>
-            <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
-              <div className="text-scheme-orange">{white.title}&nbsp;</div>
-              <div>{white.name}&nbsp;</div>
-              <div className="text-gray-500">{white.rating}</div>
-            </div>
-          </div>
+          <Board roomId={roomId} />
         </div>
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
