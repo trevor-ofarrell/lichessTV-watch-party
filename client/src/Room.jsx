@@ -65,7 +65,6 @@ const Room = (props) => {
     sendMessage,
     startTypingMessage,
     stopTypingMessage,
-    addUser,
   } = useChat(roomId, name);
 
   const handleNewMessageChange = (event) => {
@@ -98,31 +97,22 @@ const Room = (props) => {
     });
   };
 
-  const selectRandomColor = () => {
-    colors = [
-      "text-green-400",
-      "text-purple-400",
-      "text-pink-400",
-      "text-red-400",
-      "text-blue-400",
-      "text-orange-400",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
-
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!listening) {
       let source;
-      roomId !== "featured"
-        ? (source = new EventSource(
-            `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
-          ))
-        : (source = new EventSource(
-            `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
-          ));
       if (roomId !== "featured") {
+        let pgnData = {};
+        if (!pgnData.length) {
+          pgnData = await fetch(
+            `http://localhost:3030/pgn/?id=${roomId}`
+          ).then((res) => res.json());
+          console.log(pgnData);
+        }
+        source = new EventSource(
+          `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
+        );
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           //console.log(event.data);
@@ -130,8 +120,16 @@ const Room = (props) => {
           if (parsedData.id) {
             setGameID(parsedData.id);
           }
+          if (pgnData.players.black) {
+            createPlayerNames(pgnData.players.white, setWhite);
+            createPlayerNames(pgnData.players.black, setBlack);
+            console.log("users", pgnData.players.black.user.name);
+          }
         };
       } else {
+        source = new EventSource(
+          `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
+        );
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           console.log(event.data);
