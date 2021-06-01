@@ -3,6 +3,7 @@ import Chessboard from "chessboardjsx";
 import tw from "twin.macro";
 import useChat from "./useChat";
 import useTyping from "./useTyping";
+import { Board } from "./components/Board";
 
 export const Input = tw.input`
   px-4
@@ -116,71 +117,13 @@ const JoinChat = (props) => {
 
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
-  useEffect(() => {
-    if (!listening) {
-      let source;
-      roomId !== "featured"
-        ? (source = new EventSource(
-            `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
-          ))
-        : (source = new EventSource(
-            `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
-          ));
-      if (roomId !== "featured") {
-        source.onmessage = (event) => {
-          const parsedData = JSON.parse(event.data);
-          console.log(event.data);
-          setFEN([parsedData.fen]);
-        };
-      } else {
-        source.onmessage = (event) => {
-          const parsedData = JSON.parse(event.data);
-          console.log(event.data);
-          setFEN([parsedData.d.fen]);
-          if (parsedData.d.players) {
-            createPlayerNames(parsedData.d.players[0], setWhite);
-            createPlayerNames(parsedData.d.players[1], setBlack);
-          }
-        };
-      }
-      setListening(true);
-    }
-  }, [listening, FEN]);
-
   return (
     <div
       style={{ height: height, width: width }}
       className="ml-auto bg-scheme-dark overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
-        <div className="sm:mt-auto overflow-hidden m-auto">
-          <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
-            FEN: {FEN}
-          </div>
-          <div className="m-auto">
-            <div className="font-medium md:text-2xl text-lg my-1 text-white">
-              {black}
-            </div>
-            <div className="m-auto">
-              <Chessboard
-                position={FEN[0]}
-                transitionDuration={100}
-                showNotation={false}
-                calcWidth={(size) =>
-                  size.screenWidth < 1440
-                    ? (size.screenHeight / 100) * 46
-                    : size.screenWidth > 1440
-                    ? (size.screenHeight / 100) * 70
-                    : (screen.width / 100) * 100
-                }
-              />
-            </div>
-            <div className="font-medium md:text-2xl text-lg my-1 text-white">
-              {" "}
-              {white}
-            </div>
-          </div>
-        </div>
+        <Board roomId={roomId} />
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <h1 className="text-xl p-4 text-center text-white">

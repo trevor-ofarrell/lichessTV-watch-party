@@ -1,12 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const https = require("https");
 const http = require("http");
+const axios = require("axios");
 const socketIO = require("socket.io");
 const { addUser, removeUser, getUsersInRoom } = require("./users");
 const { addMessage, getMessagesInRoom } = require("./messages");
-const { resolve } = require("path");
 
 const PORT = 3030;
 const NEW_MESSAGE_EVENT = "new-message-event";
@@ -151,23 +150,28 @@ app.get("/lichesstvcustom", async function (request, res) {
   streamEvents();
 });
 
-app.get("/pgn", async function (req, res) {
-  req = https.get(
-    `https://lichess.org/game/export/${req.query.id}`,
-    {
-      headers: { Authorization: `Bearer ${process.env.LICHESS_API_TOKEN}` },
-    },
-    (resp) => {
-      resp.setEncoding("utf8");
-      resp.on("data", function (chunk) {
-        console.log(chunk);
-        resolve(chunk);
-      });
+app.get("/pgn", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `https://lichess.org/game/export/${req.query.id}`,
+      {
+        params: {
+          pgnInJson: "true",
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    if (response.status === 200) {
+      //console.log(JSON.stringify(response.data))
+      return res.send(response.data);
     }
-  );
-  req.on("error", (err) => {
-    throw new Error(err);
-  });
+    return false;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 });
 
 server.listen(PORT, () => {
