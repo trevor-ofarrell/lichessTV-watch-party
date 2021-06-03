@@ -10,7 +10,7 @@ const createPlayerObject = (user, setPlayer) => {
 };
 
 export const Board = (props) => {
-  const { roomId } = props;
+  const { roomId, handleIdUpdate } = props;
   const [FEN, setFEN] = useState([]);
   const [black, setBlack] = useState({});
   const [white, setWhite] = useState({});
@@ -28,6 +28,9 @@ export const Board = (props) => {
           if (pgnData.players.black) {
             createPlayerObject(pgnData.players.white, setWhite);
             createPlayerObject(pgnData.players.black, setBlack);
+          }
+          if (pgnData.id) {
+            handleIdUpdate(pgnData.id);
           }
         }
         source = new EventSource(
@@ -47,6 +50,9 @@ export const Board = (props) => {
           if (parsedData.d.players) {
             createPlayerObject(parsedData.d.players[0], setWhite);
             createPlayerObject(parsedData.d.players[1], setBlack);
+          }
+          if (parsedData.d.id) {
+            handleIdUpdate(parsedData.d.id);
           }
         };
       }

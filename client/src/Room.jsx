@@ -43,6 +43,10 @@ const Room = (props) => {
     }
   };
 
+  const handleIdUpdate = (id) => {
+    setGameID(id);
+  };
+
   useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }));
 
   useEffect(() => {
@@ -88,7 +92,7 @@ const Room = (props) => {
             </div>
             <h1 className="md:text-xl text-sm p-2 ml-auto">room: {roomId}</h1>
           </div>
-          <Board roomId={roomId} />
+          <Board roomId={roomId} handleIdUpdate={handleIdUpdate} />
         </div>
         <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
