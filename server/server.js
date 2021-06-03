@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const https = require("https");
 const http = require("http");
+const axios = require("axios");
 const socketIO = require("socket.io");
 const { addUser, removeUser, getUsersInRoom } = require("./users");
 const { addMessage, getMessagesInRoom } = require("./messages");
@@ -52,13 +52,11 @@ io.on("connection", (socket) => {
   const user = addUser(`${socket.id}${name}`, roomId, name);
   io.in(roomId).emit(USER_JOIN_CHAT_EVENT, user);
 
-  // Listen for new messages
   socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
     const message = addMessage(roomId, data);
     io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, message);
   });
 
-  // Listen typing events
   socket.on(START_TYPING_MESSAGE_EVENT, (data) => {
     io.in(roomId).emit(START_TYPING_MESSAGE_EVENT, data);
   });
@@ -66,7 +64,6 @@ io.on("connection", (socket) => {
     io.in(roomId).emit(STOP_TYPING_MESSAGE_EVENT, data);
   });
 
-  // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
     removeUser(socket.id);
     io.in(roomId).emit(USER_LEAVE_CHAT_EVENT, user);
@@ -105,7 +102,6 @@ app.get("/lichesstv", async function (req, res) {
           const chunkStr = chunk.toString().trim();
           if (chunkStr.length) {
             res.write(`data: ${chunkStr}\n\n`);
-            //console.log(chunkStr);
           }
         });
       }
@@ -138,7 +134,6 @@ app.get("/lichesstvcustom", async function (request, res) {
           const chunkStr = chunk.toString().trim();
           if (chunkStr.length) {
             res.write(`data: ${chunkStr}\n\n`);
-            //console.log(chunkStr);
           }
         });
       }
@@ -148,6 +143,29 @@ app.get("/lichesstvcustom", async function (request, res) {
     });
   }
   streamEvents();
+});
+
+app.get("/pgn", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `https://lichess.org/game/export/${req.query.id}`,
+      {
+        params: {
+          pgnInJson: "true",
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    if (response.status === 200) {
+      return res.send(response.data);
+    }
+    return false;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 });
 
 server.listen(PORT, () => {
