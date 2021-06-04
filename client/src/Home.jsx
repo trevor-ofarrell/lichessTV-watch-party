@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import tw from "twin.macro";
-import useWindowDimensions from "./hooks/WindowDimensions";
+import useWindowDimensions from "./hooks/useWindowDimensions";
 
 export const Input = tw.input`
   px-4

@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import Room from "./Room";
 import JoinChat from "./JoinChat";
-import useWindowDimensions from "./hooks/WindowDimensions";
+import useWindowDimensions from "./hooks/useWindowDimensions";
 
-const Chat = (props) => {
+const VerifyLoggedIn = (props) => {
   const { height, width } = useWindowDimensions();
   const { roomId } = props.match.params;
   const [name, setName] = useState(props.location.state?.name);
@@ -12,10 +12,7 @@ const Chat = (props) => {
     setName(name);
   };
   return (
-    <div
-      style={{ height: height, width: width }}
-      className="ml-auto bg-gray-900 overflow-hidden fixed"
-    >
+    <div>
       {name ? (
         <Room name={name} roomId={roomId} />
       ) : (
@@ -25,4 +22,4 @@ const Chat = (props) => {
   );
 };
 
-export default Chat;
+export default VerifyLoggedIn;

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import useChat from "./useChat";
-import useTyping from "./useTyping";
-import useWindowDimensions from "./hooks/WindowDimensions";
+import useChat from "./hooks/useChat";
+import useTyping from "./hooks/useTyping";
+import useWindowDimensions from "./hooks/useWindowDimensions";
 import { Board } from "./components/Board";
 
 const Room = (props) => {

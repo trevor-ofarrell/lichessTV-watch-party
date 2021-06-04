@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import useChat from "./useChat";
-import useWindowDimensions from "./hooks/WindowDimensions";
+import useChat from "./hooks/useChat";
+import useWindowDimensions from "./hooks/useWindowDimensions";
 
 const JoinChat = (props) => {
   const { roomId, onNameUpdate } = props;
@@ -29,10 +29,10 @@ const JoinChat = (props) => {
   return (
     <div
       style={{ height: height, width: width }}
-      className="ml-auto bg-scheme-dark overflow-hidden"
+      className="bg-scheme-dark overflow-hidden"
     >
       <div className="h-full max-h-full flex flex-col xl:items-stretch xl:flex-row overflow-hidden">
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pt-20 pb-14 bg-scheme-dark m-auto">
+        <div className="rounded-lg h-full xl:w-2/6 w-full max-w-full xl:max-w-2/6 pt-28 pb-14 bg-scheme-dark m-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <h1 className="text-xl p-4 text-center text-white">
               Room: {roomId}
