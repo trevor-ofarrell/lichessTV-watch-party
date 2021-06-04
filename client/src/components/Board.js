@@ -62,7 +62,7 @@ export const Board = (props) => {
 
   return (
     <div className="sm:mt-auto overflow-hidden m-auto">
-      <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
+      <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all hidden xl:block">
         FEN: {FEN}
       </div>
       <div className="m-auto">
