@@ -1,38 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import tw from "twin.macro";
 import useWindowDimensions from "./hooks/useWindowDimensions";
 
-export const Input = tw.input`
-  px-4
-  py-2
-  placeholder-gray-500
-  w-auto
-  lg:mx-auto
-  focus:ring-primary-100
-  focus:border-primary-500
-  border-gray-400
-  border-width[1px]
-  border-solid
-  rounded-md
-  shadow-xs
-`;
-
-export const InputTextLeft = tw(Input)`text-left py-2`;
-
-export const PrimaryButton = ({ className = "", children, ...rest }) => {
-  return (
-    <Button
-      className={`bg-primary-500 hover:bg-primary-300 text-white`}
-      {...rest}
-      data-testid="btn"
-    >
-      {children}
-    </Button>
-  );
-};
-
-const Home = (props) => {
+const Home = () => {
   const { height, width } = useWindowDimensions();
   const [room, setRoomName] = useState("");
   const [name, setName] = useState("");
