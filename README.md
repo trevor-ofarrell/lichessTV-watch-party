@@ -1,4 +1,4 @@
-# lichess TV watch party
+# Lichess TV watch party
 
 Watch live games being played on lichess.org, and join the live chat to talk to other chess fans. Join the featured rooms, or create a custom room for a certain game.
 
