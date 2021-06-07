@@ -27,7 +27,7 @@ export const Board = (props) => {
       if (roomId !== "featured") {
         if (pgnData.id !== roomId) {
           pgnData = await fetch(
-            `http://localhost:3030/pgn/?id=${roomId}`
+            `${process.env.REACT_APP_API_ENDPOINT}/pgn/?id=${roomId}`
           ).then((res) => res.json());
           if (pgnData.players.black) {
             createPlayerObject(pgnData.players.white, setWhite);
