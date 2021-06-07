@@ -6,6 +6,12 @@ Watch live games being played on lichess.org, and join the live chat to talk to 
   <img src="/client/public/mac.gif" alt="My Project GIF" width="auto" height="auto">
 </p>
 
+## About
+
+- Moves and game data is collected from the <a href="lichess.org/api">lichess.org API</a>
+- the chat is built using socket.io 
+- board is chessboardjsx
+
 ## Usage
 
 server:
