@@ -129,6 +129,7 @@ const Room = (props) => {
                   label="Message"
                   placeholder="enter message here"
                   variant="outlined"
+                  autoComplete="off"
                   value={newMessage}
                   onChange={handleNewMessageChange}
                   onKeyUp={handleKeyUp}
