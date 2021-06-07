@@ -3,9 +3,13 @@ import Chessboard from "chessboardjsx";
 
 const createPlayerObject = (user, setPlayer) => {
   setPlayer({
-    name: user.user.name,
-    title: user.user.title,
-    rating: String(user.rating),
+    name: user.user
+      ? user.user.name
+      : user.aiLevel
+      ? `Stockfish level ${user.aiLevel}`
+      : "NN",
+    title: user.user ? user.user.title : "",
+    rating: user.user ? String(user.rating) : "",
   });
 };
 
@@ -62,7 +66,7 @@ export const Board = (props) => {
 
   return (
     <div className="sm:mt-auto overflow-hidden m-auto">
-      <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all">
+      <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all hidden xl:block">
         FEN: {FEN}
       </div>
       <div className="m-auto">
