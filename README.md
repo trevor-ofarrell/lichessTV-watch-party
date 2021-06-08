@@ -8,9 +8,9 @@ Watch live games being played on lichess.org, and join the live chat to talk to 
 
 ## About
 - The apps front-end is a create-react-app, hosted by vercel, and the back-end is an express server.
-- Moves and game data is collected from the <a href="https://lichess.org/api">lichess.org API</a>
-- the chatting is websocket based, built using <a href="https://socket.io">socket.io</a>
-- the board is <a href="https://chessboardjsx.com/">chessboardJSX</a>
+- Moves and game data is collected from the <a href="https://lichess.org/api">lichess.org API</a>.
+- The chatting is websocket based, built using <a href="https://socket.io">socket.io</a>.
+- The board is <a href="https://chessboardjsx.com/">chessboardJSX</a>.
 
 ## Usage
 
