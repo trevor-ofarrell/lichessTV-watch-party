@@ -14,6 +14,8 @@ Watch live games being played on lichess.org, and join the live chat to talk to 
 
 ## Usage
 
+You will need a lichess API authorization token
+
 server:
 
 ```
