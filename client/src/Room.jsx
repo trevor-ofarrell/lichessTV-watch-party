@@ -123,7 +123,7 @@ const Room = (props) => {
               </ol>
               <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
                 <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 text-gray-500 border bg-scheme-light rounded-lg"
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 text-gray-500 border bg-scheme-light rounded-lg ring-0"
                   id="message"
                   type="text"
                   label="Message"

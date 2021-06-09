@@ -13,9 +13,12 @@ const createPlayerObject = (user, setPlayer) => {
   });
 };
 
+let stockfish = new Worker("/stockfish.js");
+
 export const Board = (props) => {
   const { roomId, handleIdUpdate } = props;
   const [FEN, setFEN] = useState([]);
+  const [sfEval, setSfEval] = useState("");
   const [black, setBlack] = useState({});
   const [white, setWhite] = useState({});
   const [listening, setListening] = useState(false);
@@ -40,16 +43,32 @@ export const Board = (props) => {
         source = new EventSource(
           `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
         );
+        stockfish.terminate();
+        stockfish = new Worker("/stockfish.js");
+        stockfish.postMessage("uci");
+        stockfish.postMessage("ucinewgame");
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
+          stockfish.postMessage("position fen " + parsedData.fen);
+          stockfish.postMessage("go depth 10");
           setFEN([parsedData.fen]);
+        };
+        stockfish.onmessage = function (event) {
+          console.log(event.data ? event.data : event);
+          setSfEval(event.data);
         };
       } else {
         source = new EventSource(
           `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
         );
+        stockfish.terminate();
+        stockfish = new Worker("/stockfish.js");
+        stockfish.postMessage("uci");
+        stockfish.postMessage("ucinewgame");
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
+          stockfish.postMessage("position fen " + parsedData.d.fen);
+          stockfish.postMessage("go depth 15");
           setFEN([parsedData.d.fen]);
           if (parsedData.d.players) {
             createPlayerObject(parsedData.d.players[0], setWhite);
@@ -57,6 +76,15 @@ export const Board = (props) => {
           }
           if (parsedData.d.id) {
             handleIdUpdate(parsedData.d.id);
+          }
+        };
+        stockfish.onmessage = function (event) {
+          console.log(event.data);
+          if (event.data.startsWith(`info depth`)) {
+            let message = event.data.split(" ");
+            const positionEval = message.pop();
+            console.log(positionEval);
+            setSfEval(positionEval);
           }
         };
       }
@@ -68,6 +96,9 @@ export const Board = (props) => {
     <div className="sm:mt-auto overflow-hidden m-auto">
       <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all hidden xl:block">
         FEN: {FEN}
+      </div>
+      <div className="font-lg md:text-ld text-md text-white max-w-70 text-left break-all hidden xl:block">
+        eval: {sfEval}
       </div>
       <div className="m-auto">
         <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
