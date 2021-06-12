@@ -33,7 +33,7 @@ export const Board = (props) => {
         ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
       } else {
         ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
-        ev = -Math.abs(ev);
+        ev = -Math.abs(ev).toFixed(1);
       }
     } else if (turn === "w" && !ev.startsWith("M")) {
       ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
