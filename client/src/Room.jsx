@@ -94,7 +94,7 @@ const Room = (props) => {
           </div>
           <Board roomId={roomId} handleIdUpdate={handleIdUpdate} />
         </div>
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-3/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <>
               <ol>
@@ -123,7 +123,7 @@ const Room = (props) => {
               </ol>
               <div className="xl:w-30% px-auto w-99 bottom-1 absolute">
                 <input
-                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 text-gray-500 border bg-scheme-light rounded-lg"
+                  className="w-full h-10 pl-3 pr-8 text-base placeholder-white-600 text-gray-500 border bg-scheme-light rounded-lg ring-0"
                   id="message"
                   type="text"
                   label="Message"

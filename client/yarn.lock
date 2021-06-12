@@ -3462,6 +3462,11 @@ check-types@^11.1.1:
   resolved "https://registry.yarnpkg.com/check-types/-/check-types-11.1.2.tgz#86a7c12bf5539f6324eb0e70ca8896c0e38f3e2f"
   integrity sha512-tzWzvgePgLORb9/3a0YenggReLKAIb2owL03H2Xdoe5pKcUyWRSEQ8xfCar8t2SIAuEDwtmx2da1YB52YuHQMQ==
 
+chess.js@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/chess.js/-/chess.js-0.12.0.tgz#ffca1773b93a4aa044891de81286e264ca229b00"
+  integrity sha512-eF1xf4j88r/AwIRxqV1FXZbVgMt4yUx05xrL+ZMqUrY+snFrUxGVHs0VgEd3AvngujDE9th7XZqqCwEKEQ7mWQ==
+
 chessboardjsx@^2.4.7:
   version "2.4.7"
   resolved "https://registry.yarnpkg.com/chessboardjsx/-/chessboardjsx-2.4.7.tgz#ae63ecd4b3bd266ce56735d5018b87d770453bf6"
@@ -10077,6 +10082,11 @@ readdirp@~3.5.0:
   dependencies:
     picomatch "^2.2.1"
 
+readline@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/readline/-/readline-1.3.0.tgz#c580d77ef2cfc8752b132498060dc9793a7ac01c"
+  integrity sha1-xYDXfvLPyHUrEySYBg3JeTp6wBw=
+
 recursive-readdir@2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/recursive-readdir/-/recursive-readdir-2.2.2.tgz#9946fb3274e1628de6e36b2f6714953b4845094f"
@@ -11015,6 +11025,11 @@ static-extend@^0.1.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
+
+stockfish@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/stockfish/-/stockfish-11.0.0.tgz#12c6b85d2978162d1acb39cb43322cc96a514ce1"
+  integrity sha512-M/+2dCK7G1FXCuM9IrmqibCXcV5sn+rwkvVCVtb5szfMfnxmC3+2Nw79d0RnTbUlWblj+wKVfVpmRqJNkM7fMA==
 
 stream-browserify@^2.0.1:
   version "2.0.2"
