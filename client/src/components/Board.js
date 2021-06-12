@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
+const Chess = require("chess.js");
 
 const createPlayerObject = (user, setPlayer) => {
   setPlayer({
@@ -17,14 +18,35 @@ let stockfish = new Worker("/stockfish.js");
 
 export const Board = (props) => {
   const { roomId, handleIdUpdate } = props;
-  const [FEN, setFEN] = useState([]);
+  const [FEN, setFEN] = useState("");
+  const [turn, setTurn] = useState("");
   const [sfEval, setSfEval] = useState("");
   const [black, setBlack] = useState({});
   const [white, setWhite] = useState({});
   const [listening, setListening] = useState(false);
 
+  const convertEvaluation = (ev, turn) => {
+    //fix fen string issue
+    console.log("turn, and score", turn, ev);
+    if (turn === "b" && !ev.startsWith("M")) {
+      if (ev.startsWith("-")) {
+        ev = ev.substring(1);
+        ev = Math.abs(parseFloat(ev) / 100);
+      } else {
+        ev = Math.abs(parseFloat(ev) / 100);
+        if (ev !== 0) {
+          ev = `-${ev}`;
+        }
+      }
+    } else if (turn === "w" && !ev.startsWith("M")) {
+      ev = Math.abs(parseFloat(ev) / 100);
+    }
+    return ev;
+  };
+
   let pgnData = {};
   useEffect(async () => {
+    let FEN = "";
     if (!listening) {
       let source;
       if (roomId !== "featured") {
@@ -50,12 +72,20 @@ export const Board = (props) => {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           stockfish.postMessage("position fen " + parsedData.fen);
-          stockfish.postMessage("go depth 10");
-          setFEN([parsedData.fen]);
+          stockfish.postMessage("go depth 20");
+          setFEN(parsedData.fen);
+          FEN = parsedData.fen;
         };
-        stockfish.onmessage = function (event) {
-          console.log(event.data ? event.data : event);
-          setSfEval(event.data);
+        stockfish.onmessage = (event) => {
+          console.log(event.data);
+          if (event.data.startsWith(`info depth`)) {
+            let message = event.data.split(" ");
+            const turn = FEN.slice(-1);
+            console.log(message[message.indexOf("cp") + 1]);
+            setSfEval(
+              convertEvaluation(message[message.indexOf("cp") + 1], turn)
+            );
+          }
         };
       } else {
         source = new EventSource(
@@ -68,8 +98,9 @@ export const Board = (props) => {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           stockfish.postMessage("position fen " + parsedData.d.fen);
-          stockfish.postMessage("go depth 15");
-          setFEN([parsedData.d.fen]);
+          stockfish.postMessage("go depth 20");
+          setFEN(parsedData.d.fen);
+          FEN = parsedData.d.fen;
           if (parsedData.d.players) {
             createPlayerObject(parsedData.d.players[0], setWhite);
             createPlayerObject(parsedData.d.players[1], setBlack);
@@ -78,13 +109,15 @@ export const Board = (props) => {
             handleIdUpdate(parsedData.d.id);
           }
         };
-        stockfish.onmessage = function (event) {
+        stockfish.onmessage = (event) => {
           console.log(event.data);
           if (event.data.startsWith(`info depth`)) {
             let message = event.data.split(" ");
-            const positionEval = message.pop();
-            console.log(positionEval);
-            setSfEval(positionEval);
+            const turn = FEN.slice(-1);
+            console.log(message[message.indexOf("cp") + 1]);
+            setSfEval(
+              convertEvaluation(message[message.indexOf("cp") + 1], turn)
+            );
           }
         };
       }
@@ -97,7 +130,7 @@ export const Board = (props) => {
       <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all hidden xl:block">
         FEN: {FEN}
       </div>
-      <div className="font-lg md:text-ld text-md text-white max-w-70 text-left break-all hidden xl:block">
+      <div className="font-lg md:text-xl text-md text-white max-w-70 text-left break-all hidden xl:block">
         eval: {sfEval}
       </div>
       <div className="m-auto">
@@ -106,9 +139,21 @@ export const Board = (props) => {
           <div>{black.name}&nbsp;</div>
           <div className="text-gray-500">{black.rating}</div>
         </div>
-        <div className="m-auto">
+        <div className="m-auto flex">
+          <div className="w-6 h-auto bg-white">
+            <div
+              style={{ height: `${100 - wHeight}%` }}
+              className={styles.barBlack}
+            >
+              <span>{wHeight < 50 ? printEvaluation() : ""}</span>
+            </div>
+            <div style={{ height: `${wHeight}%` }} className={styles.barWhite}>
+              <div style={{ flex: "1" }} />
+              <span>{wHeight >= 50 ? printEvaluation() : ""}</span>
+            </div>
+          </div>
           <Chessboard
-            position={FEN[0]}
+            position={FEN}
             transitionDuration={100}
             showNotation={false}
             calcWidth={(size) =>
