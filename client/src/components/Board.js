@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 const Chess = require("chess.js");
+import { Toggle } from "./Toggle";
 
 const createPlayerObject = (user, setPlayer) => {
   setPlayer({
@@ -21,9 +22,11 @@ export const Board = (props) => {
   const [FEN, setFEN] = useState("");
   const [turn, setTurn] = useState("");
   const [sfEval, setSfEval] = useState("");
+  const [wHeight, setWHeight] = useState(50);
   const [black, setBlack] = useState({});
   const [white, setWhite] = useState({});
   const [listening, setListening] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const convertEvaluation = (ev, turn) => {
     //fix fen string issue
@@ -31,17 +34,30 @@ export const Board = (props) => {
     if (turn === "b" && !ev.startsWith("M")) {
       if (ev.startsWith("-")) {
         ev = ev.substring(1);
-        ev = Math.abs(parseFloat(ev) / 100);
+        ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
       } else {
-        ev = Math.abs(parseFloat(ev) / 100);
-        if (ev !== 0) {
-          ev = `-${ev}`;
-        }
+        ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
       }
     } else if (turn === "w" && !ev.startsWith("M")) {
-      ev = Math.abs(parseFloat(ev) / 100);
+      ev = Math.abs(parseFloat(ev) / 100).toFixed(2);
+    } else {
+      ev = Math.abs(parseFloat(ev) / 100).toFixed(2);
     }
     return ev;
+  };
+
+  const evaluateFunc = (x) => {
+    if (x === 0) {
+      return 0;
+    } else if (x < 7) {
+      return -(0.322495 * Math.pow(x, 2)) + 7.26599 * x + 4.11834;
+    } else {
+      return (8 * x) / 145 + 5881 / 145;
+    }
+  };
+
+  const onToggle = (toggle) => {
+    setChecked(!toggle);
   };
 
   let pgnData = {};
@@ -82,9 +98,14 @@ export const Board = (props) => {
             let message = event.data.split(" ");
             const turn = FEN.slice(-1);
             console.log(message[message.indexOf("cp") + 1]);
-            setSfEval(
-              convertEvaluation(message[message.indexOf("cp") + 1], turn)
+            const evaluation = convertEvaluation(
+              message[message.indexOf("cp") + 1],
+              turn
             );
+            setSfEval(evaluation);
+            const evaluated = evaluateFunc(evaluation);
+            if (evaluation.startsWith("-")) setWHeight(50 - evaluated);
+            else setWHeight(50 + evaluated);
           }
         };
       } else {
@@ -115,9 +136,14 @@ export const Board = (props) => {
             let message = event.data.split(" ");
             const turn = FEN.slice(-1);
             console.log(message[message.indexOf("cp") + 1]);
-            setSfEval(
-              convertEvaluation(message[message.indexOf("cp") + 1], turn)
+            const evaluation = convertEvaluation(
+              message[message.indexOf("cp") + 1],
+              turn
             );
+            setSfEval(evaluation);
+            const evaluated = evaluateFunc(evaluation);
+            if (sfEval.startsWith("-")) setWHeight(50 - evaluated);
+            else setWHeight(50 + evaluated);
           }
         };
       }
@@ -140,18 +166,23 @@ export const Board = (props) => {
           <div className="text-gray-500">{black.rating}</div>
         </div>
         <div className="m-auto flex">
-          <div className="w-6 h-auto bg-white">
-            <div
-              style={{ height: `${100 - wHeight}%` }}
-              className={styles.barBlack}
-            >
-              <span>{wHeight < 50 ? printEvaluation() : ""}</span>
+          {checked === true && (
+            <div className="w-10 h-auto ">
+              <div
+                style={{ height: `${100 - wHeight}%` }}
+                className="w-full bg-black transition ease-in-out duration-700 text-center"
+              >
+                <span>{wHeight < 50 ? sfEval : ""}</span>
+              </div>
+              <div
+                style={{ height: `${wHeight}%` }}
+                className="w-full bg-white transition ease-in-out duration-700 text-center"
+              >
+                <div style={{ flex: "1" }} />
+                <span>{wHeight >= 50 ? sfEval : ""}</span>
+              </div>
             </div>
-            <div style={{ height: `${wHeight}%` }} className={styles.barWhite}>
-              <div style={{ flex: "1" }} />
-              <span>{wHeight >= 50 ? printEvaluation() : ""}</span>
-            </div>
-          </div>
+          )}
           <Chessboard
             position={FEN}
             transitionDuration={100}
@@ -171,6 +202,7 @@ export const Board = (props) => {
           <div className="text-gray-500">{white.rating}</div>
         </div>
       </div>
+      <Toggle check={checked} onUpdate={onToggle} />
     </div>
   );
 };
