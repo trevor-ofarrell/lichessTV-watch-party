@@ -94,7 +94,7 @@ const Room = (props) => {
           </div>
           <Board roomId={roomId} handleIdUpdate={handleIdUpdate} />
         </div>
-        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-4/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
+        <div className="rounded-lg h-full xl:w-2/6 xl:max-h-full max-h-3/12 w-full max-w-full xl:max-w-2/6 pb-14 bg-scheme-dark ml-auto">
           <div className="h-full ml-1 mt-1 overflow-y-auto">
             <>
               <ol>

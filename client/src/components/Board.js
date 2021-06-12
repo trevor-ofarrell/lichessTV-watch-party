@@ -160,19 +160,19 @@ export const Board = (props) => {
         </div>
         <div className="m-auto flex">
           {checked === true && (
-            <div className="w-10 h-auto ">
+            <div className="md:w-10 w-8 h-auto">
               <div
                 style={{ height: `${100 - wHeight}%` }}
                 className="w-full bg-black transition ease-in-out duration-700 text-center"
               >
-                <span>{wHeight < 50 ? sfEval : ""}</span>
+                <span className="text-sm">{wHeight < 50 ? sfEval : ""}</span>
               </div>
               <div
                 style={{ height: `${wHeight}%` }}
                 className="w-full bg-white transition ease-in-out duration-700 text-center"
               >
                 <div style={{ flex: "1" }} />
-                <span>{wHeight >= 50 ? sfEval : ""}</span>
+                <span className="text-sm">{wHeight >= 50 ? sfEval : ""}</span>
               </div>
             </div>
           )}
