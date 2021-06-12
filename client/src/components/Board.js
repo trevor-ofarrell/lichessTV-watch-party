@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
-const Chess = require("chess.js");
 import { Toggle } from "./Toggle";
 
 const createPlayerObject = (user, setPlayer) => {
@@ -20,7 +19,6 @@ let stockfish = new Worker("/stockfish.js");
 export const Board = (props) => {
   const { roomId, handleIdUpdate } = props;
   const [FEN, setFEN] = useState("");
-  const [turn, setTurn] = useState("");
   const [sfEval, setSfEval] = useState("");
   const [wHeight, setWHeight] = useState(50);
   const [black, setBlack] = useState({});
@@ -29,19 +27,18 @@ export const Board = (props) => {
   const [checked, setChecked] = useState(false);
 
   const convertEvaluation = (ev, turn) => {
-    //fix fen string issue
-    console.log("turn, and score", turn, ev);
     if (turn === "b" && !ev.startsWith("M")) {
       if (ev.startsWith("-")) {
         ev = ev.substring(1);
         ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
       } else {
         ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
+        ev = -Math.abs(ev);
       }
     } else if (turn === "w" && !ev.startsWith("M")) {
-      ev = Math.abs(parseFloat(ev) / 100).toFixed(2);
+      ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
     } else {
-      ev = Math.abs(parseFloat(ev) / 100).toFixed(2);
+      ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
     }
     return ev;
   };
@@ -93,18 +90,16 @@ export const Board = (props) => {
           FEN = parsedData.fen;
         };
         stockfish.onmessage = (event) => {
-          console.log(event.data);
           if (event.data.startsWith(`info depth`)) {
             let message = event.data.split(" ");
             const turn = FEN.slice(-1);
-            console.log(message[message.indexOf("cp") + 1]);
             const evaluation = convertEvaluation(
               message[message.indexOf("cp") + 1],
               turn
             );
             setSfEval(evaluation);
             const evaluated = evaluateFunc(evaluation);
-            if (evaluation.startsWith("-")) setWHeight(50 - evaluated);
+            if (Math.sign(evaluation) === -1) setWHeight(50 - evaluated);
             else setWHeight(50 + evaluated);
           }
         };
@@ -131,18 +126,16 @@ export const Board = (props) => {
           }
         };
         stockfish.onmessage = (event) => {
-          console.log(event.data);
           if (event.data.startsWith(`info depth`)) {
             let message = event.data.split(" ");
             const turn = FEN.slice(-1);
-            console.log(message[message.indexOf("cp") + 1]);
             const evaluation = convertEvaluation(
               message[message.indexOf("cp") + 1],
               turn
             );
             setSfEval(evaluation);
             const evaluated = evaluateFunc(evaluation);
-            if (sfEval.startsWith("-")) setWHeight(50 - evaluated);
+            if (Math.sign(evaluation) === -1) setWHeight(50 - evaluated);
             else setWHeight(50 + evaluated);
           }
         };
