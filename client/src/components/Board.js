@@ -31,15 +31,23 @@ export const Board = (props) => {
       let adv;
       let message = event.data.split(" ");
       const turn = fen.slice(-1);
+
       let evaluation = convertEvaluation(
         message[message.indexOf("cp") + 1],
         turn
       );
+
       if (evaluation.startsWith("-")) adv = "b";
       else adv = "w";
+
+      if ((parseFloat(evaluation) / 100).toFixed(1) === 0.0) {
+        evaluation = Math.abs(evaluation);
+      }
       setSfEval((parseFloat(evaluation) / 100).toFixed(1));
+
       evaluation = Math.abs(parseFloat(evaluation) / 100);
       const evaluated = evaluateFunc(evaluation);
+
       if (adv === "w") setWHeight(50 + evaluated);
       else setWHeight(50 - evaluated);
     }
@@ -81,6 +89,7 @@ export const Board = (props) => {
           pgnData = await fetch(
             `${process.env.REACT_APP_API_ENDPOINT}/pgn/?id=${roomId}`
           ).then((res) => res.json());
+
           if (pgnData.players.black) {
             createPlayerObject(pgnData.players.white, setWhite);
             createPlayerObject(pgnData.players.black, setBlack);
@@ -89,13 +98,16 @@ export const Board = (props) => {
             handleIdUpdate(pgnData.id);
           }
         }
+
         source = new EventSource(
           `${process.env.REACT_APP_API_ENDPOINT}/lichesstvcustom/?id=${roomId}`
         );
+
         stockfish.terminate();
         stockfish = new Worker("/stockfish.js");
         stockfish.postMessage("uci");
         stockfish.postMessage("ucinewgame");
+
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           stockfish.postMessage("position fen " + parsedData.fen);
@@ -103,6 +115,7 @@ export const Board = (props) => {
           setFEN(parsedData.fen);
           FEN = parsedData.fen;
         };
+
         stockfish.onmessage = (event) => {
           onStockfishMsg(event, FEN);
         };
@@ -110,24 +123,29 @@ export const Board = (props) => {
         source = new EventSource(
           `${process.env.REACT_APP_API_ENDPOINT}/lichesstv`
         );
+
         stockfish.terminate();
         stockfish = new Worker("/stockfish.js");
         stockfish.postMessage("uci");
         stockfish.postMessage("ucinewgame");
+
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
           stockfish.postMessage("position fen " + parsedData.d.fen);
           stockfish.postMessage("go depth 20");
           setFEN(parsedData.d.fen);
           FEN = parsedData.d.fen;
+
           if (parsedData.d.players) {
             createPlayerObject(parsedData.d.players[0], setWhite);
             createPlayerObject(parsedData.d.players[1], setBlack);
           }
+
           if (parsedData.d.id) {
             handleIdUpdate(parsedData.d.id);
           }
         };
+
         stockfish.onmessage = (event) => {
           onStockfishMsg(event, FEN);
         };
@@ -140,9 +158,6 @@ export const Board = (props) => {
     <div className="sm:mt-auto overflow-hidden m-auto">
       <div className="font-medium md:text-sm text-xs text-white max-w-70 text-left break-all hidden xl:block">
         FEN: {FEN}
-      </div>
-      <div className="font-lg md:text-xl text-md text-white max-w-70 text-left break-all hidden xl:block">
-        eval: {sfEval}
       </div>
       <div className="m-auto">
         <div className="flex font-medium md:text-2xl text-lg my-1 text-white">
@@ -163,7 +178,7 @@ export const Board = (props) => {
               </div>
               <div
                 style={{ height: `${wHeight}%` }}
-                className="w-full bg-white transition ease-in-out duration-700 text-center"
+                className="w-full bg-gray-300 transition ease-in-out duration-700 text-center"
               >
                 <div style={{ flex: "1" }} />
                 <span className="text-sm font-bold text-black">
