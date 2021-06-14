@@ -13,6 +13,7 @@ export const Board = (props) => {
   const [white, setWhite] = useState({});
   const [listening, setListening] = useState(false);
   const [checked, setChecked] = useState(false);
+  const depth = 20;
 
   const createPlayerObject = (user, setPlayer) => {
     setPlayer({
@@ -94,6 +95,7 @@ export const Board = (props) => {
             createPlayerObject(pgnData.players.white, setWhite);
             createPlayerObject(pgnData.players.black, setBlack);
           }
+
           if (pgnData.id) {
             handleIdUpdate(pgnData.id);
           }
@@ -110,8 +112,10 @@ export const Board = (props) => {
 
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          stockfish.postMessage("position fen " + parsedData.fen);
-          stockfish.postMessage("go depth 20");
+
+          stockfish.postMessage(`position fen ${parsedData.d.fen}`);
+          stockfish.postMessage(`go depth ${depth}`);
+
           setFEN(parsedData.fen);
           FEN = parsedData.fen;
         };
@@ -131,8 +135,10 @@ export const Board = (props) => {
 
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
-          stockfish.postMessage("position fen " + parsedData.d.fen);
-          stockfish.postMessage("go depth 20");
+
+          stockfish.postMessage(`position fen ${parsedData.d.fen}`);
+          stockfish.postMessage(`go depth ${depth}`);
+
           setFEN(parsedData.d.fen);
           FEN = parsedData.d.fen;
 
@@ -206,7 +212,7 @@ export const Board = (props) => {
           <div className="text-gray-500">{white.rating}</div>
         </div>
       </div>
-      <Toggle check={checked} onUpdate={onToggle} />
+      <Toggle check={checked} onUpdate={onToggle} depth={depth} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const Toggle = ({ check, onUpdate }) => {
+export const Toggle = ({ check, onUpdate, depth }) => {
   const [checked, setChecked] = useState(check);
 
   return (
@@ -53,7 +53,7 @@ export const Toggle = ({ check, onUpdate }) => {
               </span>
             </span>
             <span class="ml-3 text-sm text-scheme-orange">
-              Stockfish 11 evaluation
+              {`Stockfish 11 evaluation (depth ${depth})`}
             </span>
           </label>
         </div>
