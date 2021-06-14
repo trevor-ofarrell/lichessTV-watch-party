@@ -39,7 +39,7 @@ export const Toggle = ({ check, onUpdate }) => {
             <span class="relative">
               <span class="block w-10 h-6 bg-gray-400 rounded-full shadow-inner"></span>
               <span
-                class="absolute block w-4 h-4 mt-1 ml-1 rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out bg-green-500 transform translate-x-full"
+                class="absolute block w-4 h-4 mt-1 ml-1 rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out bg-scheme-orange transform translate-x-full"
                 onClick={() => {
                   setChecked(!checked);
                   onUpdate(checked);
@@ -52,7 +52,7 @@ export const Toggle = ({ check, onUpdate }) => {
                 />
               </span>
             </span>
-            <span class="ml-3 text-sm text-green-500">
+            <span class="ml-3 text-sm text-scheme-orange">
               Stockfish 11 eval on
             </span>
           </label>
