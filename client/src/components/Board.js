@@ -91,7 +91,7 @@ export const Board = (props) => {
             `${process.env.REACT_APP_API_ENDPOINT}/pgn/?id=${roomId}`
           ).then((res) => res.json());
 
-          if (pgnData.players.black) {
+          if (pgnData.players) {
             createPlayerObject(pgnData.players.white, setWhite);
             createPlayerObject(pgnData.players.black, setBlack);
           }
@@ -113,7 +113,7 @@ export const Board = (props) => {
         source.onmessage = (event) => {
           const parsedData = JSON.parse(event.data);
 
-          stockfish.postMessage(`position fen ${parsedData.d.fen}`);
+          stockfish.postMessage(`position fen ${parsedData.fen}`);
           stockfish.postMessage(`go depth ${depth}`);
 
           setFEN(parsedData.fen);

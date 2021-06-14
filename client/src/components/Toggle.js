@@ -14,7 +14,7 @@ export const Toggle = ({ check, onUpdate, depth }) => {
             <span class="relative">
               <span class="block w-10 h-6 bg-gray-400 rounded-full shadow-inner"></span>
               <span
-                class="absolute block w-4 h-4 mt-1 ml-1 bg-white rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out"
+                class="absolute block w-4 h-4 mt-1 ml-1 bg-white rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out cursor-pointer"
                 onClick={() => {
                   setChecked(!checked);
                   onUpdate(checked);
@@ -31,7 +31,7 @@ export const Toggle = ({ check, onUpdate, depth }) => {
           </label>
         </div>
       ) : (
-        <div>
+        <div className="cursor-pointer">
           <label
             for="checked"
             class="mt-3 inline-flex items-center cursor-pointer transition ease-in-out duration-500"
@@ -39,7 +39,7 @@ export const Toggle = ({ check, onUpdate, depth }) => {
             <span class="relative">
               <span class="block w-10 h-6 bg-gray-400 rounded-full shadow-inner border-1 border-scheme-orange"></span>
               <span
-                class="absolute block w-4 h-4 mt-1 ml-1 rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out bg-scheme-orange transform translate-x-full"
+                class="absolute block w-4 h-4 mt-1 ml-1 rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out bg-scheme-orange transform translate-x-full cursor-pointer"
                 onClick={() => {
                   setChecked(!checked);
                   onUpdate(checked);
