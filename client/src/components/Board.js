@@ -2,18 +2,6 @@ import React, { useState, useEffect } from "react";
 import Chessboard from "chessboardjsx";
 import { Toggle } from "./Toggle";
 
-const createPlayerObject = (user, setPlayer) => {
-  setPlayer({
-    name: user.user
-      ? user.user.name
-      : user.aiLevel
-      ? `Stockfish level ${user.aiLevel}`
-      : "NN",
-    title: user.user ? user.user.title : "",
-    rating: user.user ? String(user.rating) : "",
-  });
-};
-
 let stockfish = new Worker("/stockfish.js");
 
 export const Board = (props) => {
@@ -26,19 +14,45 @@ export const Board = (props) => {
   const [listening, setListening] = useState(false);
   const [checked, setChecked] = useState(false);
 
+  const createPlayerObject = (user, setPlayer) => {
+    setPlayer({
+      name: user.user
+        ? user.user.name
+        : user.aiLevel
+        ? `Stockfish level ${user.aiLevel}`
+        : "NN",
+      title: user.user ? user.user.title : "",
+      rating: user.user ? String(user.rating) : "",
+    });
+  };
+
+  const onStockfishMsg = (event, fen) => {
+    if (event.data.startsWith(`info depth`)) {
+      let adv;
+      let message = event.data.split(" ");
+      const turn = fen.slice(-1);
+      let evaluation = convertEvaluation(
+        message[message.indexOf("cp") + 1],
+        turn
+      );
+      if (evaluation.startsWith("-")) adv = "b";
+      else adv = "w";
+      setSfEval((parseFloat(evaluation) / 100).toFixed(1));
+      evaluation = Math.abs(parseFloat(evaluation) / 100);
+      const evaluated = evaluateFunc(evaluation);
+      if (adv === "w") setWHeight(50 + evaluated);
+      else setWHeight(50 - evaluated);
+    }
+  };
+
   const convertEvaluation = (ev, turn) => {
+    console.log("ev", ev, turn);
     if (turn === "b" && !ev.startsWith("M")) {
       if (ev.startsWith("-")) {
         ev = ev.substring(1);
-        ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
       } else {
-        ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
-        ev = -Math.abs(ev).toFixed(1);
+        ev = ev = `-${ev}`;
       }
-    } else if (turn === "w" && !ev.startsWith("M")) {
-      ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
-    } else {
-      ev = Math.abs(parseFloat(ev) / 100).toFixed(1);
     }
     return ev;
   };
@@ -90,18 +104,7 @@ export const Board = (props) => {
           FEN = parsedData.fen;
         };
         stockfish.onmessage = (event) => {
-          if (event.data.startsWith(`info depth`)) {
-            let message = event.data.split(" ");
-            const turn = FEN.slice(-1);
-            const evaluation = convertEvaluation(
-              message[message.indexOf("cp") + 1],
-              turn
-            );
-            setSfEval(evaluation);
-            const evaluated = evaluateFunc(evaluation);
-            if (Math.sign(evaluation) === -1) setWHeight(50 - evaluated);
-            else setWHeight(50 + evaluated);
-          }
+          onStockfishMsg(event, FEN);
         };
       } else {
         source = new EventSource(
@@ -126,18 +129,7 @@ export const Board = (props) => {
           }
         };
         stockfish.onmessage = (event) => {
-          if (event.data.startsWith(`info depth`)) {
-            let message = event.data.split(" ");
-            const turn = FEN.slice(-1);
-            const evaluation = convertEvaluation(
-              message[message.indexOf("cp") + 1],
-              turn
-            );
-            setSfEval(evaluation);
-            const evaluated = evaluateFunc(evaluation);
-            if (Math.sign(evaluation) === -1) setWHeight(50 - evaluated);
-            else setWHeight(50 + evaluated);
-          }
+          onStockfishMsg(event, FEN);
         };
       }
       setListening(true);
@@ -160,19 +152,23 @@ export const Board = (props) => {
         </div>
         <div className="m-auto flex">
           {checked === true && (
-            <div className="md:w-10 w-8 h-auto">
+            <div className="md:w-10 w-8 h-auto mr-1">
               <div
                 style={{ height: `${100 - wHeight}%` }}
                 className="w-full bg-black transition ease-in-out duration-700 text-center"
               >
-                <span className="text-sm">{wHeight < 50 ? sfEval : ""}</span>
+                <span className="text-sm font-bold text-white">
+                  {wHeight < 50 ? sfEval : ""}
+                </span>
               </div>
               <div
                 style={{ height: `${wHeight}%` }}
                 className="w-full bg-white transition ease-in-out duration-700 text-center"
               >
                 <div style={{ flex: "1" }} />
-                <span className="text-sm">{wHeight >= 50 ? sfEval : ""}</span>
+                <span className="text-sm font-bold text-black">
+                  {wHeight >= 50 ? sfEval : ""}
+                </span>
               </div>
             </div>
           )}
