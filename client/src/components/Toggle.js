@@ -27,7 +27,7 @@ export const Toggle = ({ check, onUpdate }) => {
                 />
               </span>
             </span>
-            <span class="ml-3 text-sm text-white">Stockfish 11 eval off</span>
+            <span class="ml-3 text-sm text-white">Stockfish 11 evaluation</span>
           </label>
         </div>
       ) : (
@@ -37,7 +37,7 @@ export const Toggle = ({ check, onUpdate }) => {
             class="mt-3 inline-flex items-center cursor-pointer transition ease-in-out duration-500"
           >
             <span class="relative">
-              <span class="block w-10 h-6 bg-gray-400 rounded-full shadow-inner"></span>
+              <span class="block w-10 h-6 bg-gray-400 rounded-full shadow-inner border-1 border-scheme-orange"></span>
               <span
                 class="absolute block w-4 h-4 mt-1 ml-1 rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline transition-transform duration-300 ease-in-out bg-scheme-orange transform translate-x-full"
                 onClick={() => {
@@ -53,7 +53,7 @@ export const Toggle = ({ check, onUpdate }) => {
               </span>
             </span>
             <span class="ml-3 text-sm text-scheme-orange">
-              Stockfish 11 eval on
+              Stockfish 11 evaluation
             </span>
           </label>
         </div>
